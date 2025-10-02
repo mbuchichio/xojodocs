@@ -25,15 +25,15 @@ Timeline and pending tasks for XojoDoc development.
   - [ ] Define main modules
 
 ### Sprint 2: Parser and Indexer (Days 4-7)
-- [ ] Implement `indexer.py`
-  - [ ] HTML parser with BeautifulSoup
-  - [ ] Extract classes and methods
-  - [ ] Extract descriptions and examples
-  - [ ] Clean HTML to plain text/markdown
-- [ ] Implement SQLite database
-  - [ ] Create initial schema
-  - [ ] Configure FTS5 for full-text search
-  - [ ] Migration scripts
+- [x] Implement `indexer.py`
+  - [x] HTML parser with BeautifulSoup
+  - [x] Extract classes and methods
+  - [x] Extract descriptions and examples
+  - [x] Clean HTML to plain text/markdown
+- [x] Implement SQLite database
+  - [x] Create schema initial
+  - [x] Configure FTS5 for full-text search
+  - [x] Migration scripts
 - [ ] Test complete indexing
   - [ ] Verify all classes are indexed
   - [ ] Validate extraction quality

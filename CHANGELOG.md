@@ -13,10 +13,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - Source package structure in `src/xojodoc/`
 - HTML structure analysis document (`docs/HTML_STRUCTURE.md`)
 - Database schema design for SQLite + FTS5
+- HTML parser module (`parser.py`) with BeautifulSoup
+- Database management module (`database.py`) with FTS5 support
+- Indexer coordinator (`indexer.py`) for building documentation index
+- Data models: XojoClass, XojoProperty, XojoMethod
+- Test suite for Sprint 2 (`test_sprint2.py`)
+- Development documentation (`docs/DEVELOPMENT.md`)
 
 ### Planned
-- HTML parser implementation with BeautifulSoup
-- Indexing system with SQLite + FTS5
 - Basic CLI with simple search
 - Interactive TUI with rich/textual
 - Export mode for AI context
