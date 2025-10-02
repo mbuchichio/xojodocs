@@ -1,112 +1,127 @@
 # Changelog - XojoDoc
 
-Historial de cambios del proyecto.
+All notable changes to this project will be documented in this file.
 
-## [2025-10-02] - Sprint 6: Polish y Release 🚀
+## [2025-10-02] - Sprint 6: Polish & Release 🚀
 
-### 🎉 Agregado
-- **Sistema de configuración simplificado** - `xojodoc.conf` auto-generado
-- **config.py** - Módulo para leer configuración sin editar código
-- **xojodoc --reindex** - Comando integrado para rebuild (reemplaza reindex.py)
-- **README simplificado** - Conciso, directo, lenguaje sobrio
-- **INSTALLATION.md** - Guía práctica sin verbosidad
-- **Test framework** - tests/test_parser.py estructura inicial
-- **Version bump** - 0.1.0-alpha preparando release
+### 🎉 Added
+- **Simplified configuration system** - `xojodoc.conf` auto-generated
+- **config.py** - Module to read configuration without editing code
+- **xojodoc --reindex** - Integrated rebuild command (replaces reindex.py)
+- **Simplified README** - Concise, direct, professional language
+- **INSTALLATION.md** - Practical guide without verbosity
+- **Test framework** - tests/test_parser.py initial structure
+- **Version bump** - 0.1.0-alpha preparing for release
 
-### 📝 Documentación
-- xojodoc.conf: Se crea automáticamente si no existe
-- Archivo de configuración minimalista (solo html_root y database)
-- Eliminada complejidad innecesaria (temp paths, múltiples locations)
-- README y docs simplificados: foco en lo esencial
+### 📝 Documentation
+- xojodoc.conf: Created automatically if missing
+- Minimalist config file (only html_root and database)
+- Removed unnecessary complexity (temp paths, multiple locations)
+- Simplified README and docs: focus on essentials
 
-### 🔧 Modificado  
+### 🔧 Changed
 - pyproject.toml - Version 0.1.0-alpha
 - Development Status - Pre-Alpha → Alpha
-- reindex.py - Usa sistema de configuración simple, no borra DB
-- indexer.py - Eliminada lógica de temp_db_path
-- config.py - Busca solo en directorio de la app, auto-genera si falta
+- reindex.py - Uses simple config system, doesn't delete DB
+- indexer.py - Removed temp_db_path logic
+- config.py - Searches only in app directory, auto-generates if missing
 
-### 🐛 Corregido
-- reindex.py ya no borra la DB existente (el indexer actualiza registros)
-- Encoding errors con emojis en Windows (removidos)
-- Imports innecesarios eliminados
+### 🐛 Fixed
+- reindex.py no longer deletes existing DB (indexer updates records)
+- Encoding errors with emojis on Windows (removed)
+- Unnecessary imports removed
+- **PyInstaller compatibility** - Relative imports converted to absolute
+- **Error messages** - No longer mention Python, use `xojodoc --reindex`
 
-### 💡 Decisiones de Diseño
-- **Una sola ubicación de config** - Solo junto a la app (no CWD, no home)
-- **Sin temp path** - Diferencia de performance no justifica complejidad
-- **Auto-generación** - Primera ejecución crea config con defaults
-- **Rutas macOS/Linux omitidas** - Mejor no poner info incorrecta
-- **CLI unificado** - `xojodoc --reindex` en vez de script separado
+### 📦 Packaging
+- **PyInstaller** - Spec file created for standalone build
+- **xojodoc.exe** - 18 MB executable with everything included
+- **xojodoc.conf.template** - Packaged as data file
+- **Functional build** - Tested end-to-end with config auto-generation
 
----
+### 💡 Design Decisions
+- **Single config location** - Only next to the app (not CWD, not home)
+- **No temp path** - Performance difference doesn't justify complexity
+- **Auto-generation** - First run creates config with defaults
+- **macOS/Linux paths omitted** - Better not to provide incorrect info
+- **Unified CLI** - `xojodoc --reindex` instead of separate script
 
-## [2025-10-02] - Descripciones Completas ✅
-
-### 🎉 Agregado
-- **Descripciones completas** - Properties y methods ahora tienen documentación completa con ejemplos de código
-- **CLI con descripciones** - Flag `-a` ahora muestra descripciones completas de cada property/method
-- **Ejemplos de código** - Methods incluyen code examples con indentación y color
-- **Indexación optimizada en SSD** - Database se construye en C:\temp para mayor velocidad, luego se mueve al proyecto
-- **Script reindex.py** - Facilita reconstrucción completa de base de datos
-- **1405 clases indexadas** - Cobertura completa con parsing recursivo (vs 717 anterior)
-- **Prefix matching** - Buscar "Desk" encuentra "DesktopWindow", "DesktopButton", etc.
-- **Filtro deprecated** - Toggle con tecla `d` en TUI (ocultos por defecto)
-- **Debouncing 500ms** - Reduce queries durante escritura
-- **Search module.class** - Formato "desktop.window" soportado
-- **CLI simplificado** - `xojodoc` = TUI, `xojodoc Graphics` = search (sin subcomandos)
-
-### 🔧 Modificado  
-- **Parser HTML** - Reescrito para extraer de `<blockquote>` después de `<hr id="...">` (antes buscaba `<section>` incorrectamente)
-- **Sidebar TUI** - Aumentado a 40 caracteres (vs 35)
-- **Ordenamiento** - Resultados alfabéticos en todas las búsquedas
-
-### ✅ Corregido
-- **Descripciones NULL** - Parser ahora navega correctamente la estructura HTML con `next_siblings`
-- **Duplicados** - Agregado `DISTINCT` a queries FTS5
-- **Classes faltantes** - Parsing recursivo con `rglob()` encuentra subdirectorios
-- **Errores FTS5** - Sanitización de caracteres especiales con regex
-
-### 🔨 Detalles Técnicos
-- Métodos `_extract_property_description()` y `_extract_method_description()` completamente reescritos
-- Indexer soporta `temp_db_path` con auto-movimiento al finalizar
-- Schema BD: campos `description` y `sample_code` ahora populados correctamente
+### 🔮 Future (v2.0)
+- **Rewrite in Xojo** - v2.0 will be native Xojo
+  - Instant build (~5s vs 40s)
+  - Lighter executable (~2 MB vs 18 MB)
+  - Zero dev configuration (no pip, no Python)
+  - The Xojo tool, made in Xojo 🎯
 
 ---
 
-## [Sprints 1-4] - MVP Core Completado
+## [2025-10-02] - Full Descriptions ✅
 
-### Sprint 1 - Análisis y Arquitectura ✅
-- Estructura del proyecto
-- Análisis de HTML de Xojo
-- Diseño de schema SQLite + FTS5
+### 🎉 Added
+- **Full descriptions** - Properties and methods now have complete documentation with code examples
+- **CLI with descriptions** - `-a` flag now shows full descriptions of each property/method
+- **Code examples** - Methods include code examples with indentation and color
+- **SSD-optimized indexing** - Database built in C:\temp for speed, then moved to project
+- **reindex.py script** - Facilitates complete database rebuild
+- **1405 classes indexed** - Full coverage with recursive parsing (vs 717 before)
+- **Prefix matching** - Searching "Desk" finds "DesktopWindow", "DesktopButton", etc.
+- **Deprecated filter** - Toggle with `d` key in TUI (hidden by default)
+- **500ms debouncing** - Reduces queries during typing
+- **Search module.class** - "desktop.window" format supported
+- **Simplified CLI** - `xojodoc` = TUI, `xojodoc Graphics` = search (no subcommands)
 
-### Sprint 2 - Parser e Indexer ✅
-- Parser HTML con BeautifulSoup
-- Database SQLite con FTS5
-- Indexación incremental (100x más rápido: 0.2s vs 10+ min)
-- Tracking de `file_mtime` para cambios
+### 🔧 Changed
+- **HTML Parser** - Rewritten to extract from `<blockquote>` after `<hr id="...">` (previously searched `<section>` incorrectly)
+- **TUI Sidebar** - Increased to 40 characters (vs 35)
+- **Sorting** - Alphabetical results in all searches
 
-### Sprint 3 - CLI Básico ✅  
-- CLI con Click framework
+### ✅ Fixed
+- **NULL descriptions** - Parser now correctly navigates HTML structure with `next_siblings`
+- **Duplicates** - Added `DISTINCT` to FTS5 queries
+- **Missing classes** - Recursive parsing with `rglob()` finds subdirectories
+- **FTS5 errors** - Special character sanitization with regex
+
+### 🔨 Technical Details
+- Methods `_extract_property_description()` and `_extract_method_description()` completely rewritten
+- Indexer supports `temp_db_path` with auto-move on completion
+- DB schema: `description` and `sample_code` fields now correctly populated
+
+---
+
+## [Sprints 1-4] - Core MVP Completed
+
+### Sprint 1 - Analysis & Architecture ✅
+- Project structure
+- Xojo HTML analysis
+- SQLite + FTS5 schema design
+
+### Sprint 2 - Parser & Indexer ✅
+- HTML parser with BeautifulSoup
+- SQLite database with FTS5
+- Incremental indexing (100x faster: 0.2s vs 10+ min)
+- `file_mtime` tracking for changes
+
+### Sprint 3 - Basic CLI ✅
+- CLI with Click framework
 - Search, class, method commands
-- Output formateado con Rich
+- Formatted output with Rich
 - 6 tests passing
 
-### Sprint 4 - TUI Interactivo ✅
-- TUI con Textual framework
-- Layout de dos paneles
-- Search en tiempo real
-- Navegación estilo man/less (q, /, ?, hjkl)
+### Sprint 4 - Interactive TUI ✅
+- TUI with Textual framework
+- Two-panel layout
+- Real-time search
+- man/less-style navigation (q, /, ?, hjkl)
 - 6 tests passing
 
 ---
 
-## [2025-10-02] - Inicio del Proyecto
+## [2025-10-02] - Project Start
 
-### Creación
-- Proyecto XojoDoc iniciado
-- README con visión y arquitectura
-- Estructura básica del proyecto
+### Creation
+- XojoDoc project initiated
+- README with vision and architecture
+- Basic project structure
 
-### Objetivo
-Reducir fricción en desarrollo Xojo con AI assistants de 80% a ~30% de tiempo perdido corrigiendo código incorrecto.
+### Objective
+Reduce friction in Xojo development with AI assistants from 80% to ~30% of time wasted fixing incorrect code.
