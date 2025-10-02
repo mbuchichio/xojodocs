@@ -10,7 +10,6 @@
 
 #define DB_FILENAME "xojo.db"
 #define VERSION "2.0.0"
-#define MAX_RESULTS 20
 
 // Windows compatibility for strcasecmp
 #ifdef _WIN32
@@ -45,6 +44,29 @@ char* get_db_path(const char *exe_path) {
 
 int main(int argc, char *argv[]) {
     // No arguments - show help
+    if (argc < 2) {
+        display_help();
+        return 0;
+    }
+
+    // Parse global flags
+    int include_deprecated = 0;
+    int arg_offset = 0;
+    
+    // Check for --deprecated flag anywhere in args
+    for (int i = 1; i < argc; i++) {
+        if (strcmp(argv[i], "--deprecated") == 0 || strcmp(argv[i], "-dep") == 0) {
+            include_deprecated = 1;
+            // Shift args to remove this flag
+            for (int j = i; j < argc - 1; j++) {
+                argv[j] = argv[j + 1];
+            }
+            argc--;
+            i--;  // Recheck this position
+        }
+    }
+    
+    // No arguments after flag removal - show help
     if (argc < 2) {
         display_help();
         return 0;
@@ -200,7 +222,7 @@ int main(int argc, char *argv[]) {
     
     // Default: search query
     const char *query = command;
-    SearchResult *results = db_search(db, query, MAX_RESULTS);
+    SearchResult *results = db_search(db, query, 0, include_deprecated);  // 0 = no limit
     
     if (!results || results[0].class_name == NULL) {
         printf("No results found for '%s'.\n", query);

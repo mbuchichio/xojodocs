@@ -52,8 +52,9 @@ void db_close(sqlite3 *db);
 /**
  * Search classes using FTS5
  * Returns: Array of SearchResult (NULL-terminated)
+ * @param include_deprecated If 0, exclude deprecated classes
  */
-SearchResult* db_search(sqlite3 *db, const char *query, int max_results);
+SearchResult* db_search(sqlite3 *db, const char *query, int max_results, int include_deprecated);
 
 /**
  * Get class details by name

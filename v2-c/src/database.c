@@ -26,17 +26,32 @@ void db_close(sqlite3 *db) {
     }
 }
 
-SearchResult* db_search(sqlite3 *db, const char *query, int max_results) {
+SearchResult* db_search(sqlite3 *db, const char *query, int max_results, int include_deprecated) {
     sqlite3_stmt *stmt;
     int rc;
     
+    // If max_results is 0, fetch all results
+    int use_limit = (max_results > 0);
+    
     // Special case: * means list all (no FTS search)
     if (strcmp(query, "*") == 0) {
-        const char *sql = 
-            "SELECT name, module, description "
-            "FROM classes "
-            "ORDER BY name "
-            "LIMIT ?";
+        char sql[512];
+        const char *where = include_deprecated ? "" : "WHERE module != 'deprecated' AND module NOT LIKE 'deprecated_%' ";
+        
+        if (use_limit) {
+            snprintf(sql, sizeof(sql),
+                "SELECT name, module, description "
+                "FROM classes "
+                "%s"
+                "ORDER BY name "
+                "LIMIT %d", where, max_results);
+        } else {
+            snprintf(sql, sizeof(sql),
+                "SELECT name, module, description "
+                "FROM classes "
+                "%s"
+                "ORDER BY name", where);
+        }
         
         rc = sqlite3_prepare_v2(db, sql, -1, &stmt, NULL);
         
@@ -44,17 +59,29 @@ SearchResult* db_search(sqlite3 *db, const char *query, int max_results) {
             fprintf(stderr, "SQL error: %s\n", sqlite3_errmsg(db));
             return NULL;
         }
-        
-        sqlite3_bind_int(stmt, 1, max_results);
     } else {
         // Normal FTS search with prefix matching
-        const char *sql = 
-            "SELECT c.name, c.module, c.description "
-            "FROM classes c "
-            "JOIN search_index si ON c.id = si.rowid "
-            "WHERE search_index MATCH ? "
-            "ORDER BY rank "
-            "LIMIT ?";
+        char sql[768];
+        const char *and_clause = include_deprecated ? "" : "AND c.module != 'deprecated' AND c.module NOT LIKE 'deprecated_%' ";
+        
+        if (use_limit) {
+            snprintf(sql, sizeof(sql),
+                "SELECT c.name, c.module, c.description "
+                "FROM classes c "
+                "JOIN search_index si ON c.id = si.rowid "
+                "WHERE search_index MATCH ? "
+                "%s"
+                "ORDER BY rank "
+                "LIMIT %d", and_clause, max_results);
+        } else {
+            snprintf(sql, sizeof(sql),
+                "SELECT c.name, c.module, c.description "
+                "FROM classes c "
+                "JOIN search_index si ON c.id = si.rowid "
+                "WHERE search_index MATCH ? "
+                "%s"
+                "ORDER BY rank", and_clause);
+        }
         
         rc = sqlite3_prepare_v2(db, sql, -1, &stmt, NULL);
         
@@ -68,14 +95,20 @@ SearchResult* db_search(sqlite3 *db, const char *query, int max_results) {
         snprintf(search_query, sizeof(search_query), "%s*", query);
         
         sqlite3_bind_text(stmt, 1, search_query, -1, SQLITE_TRANSIENT);
-        sqlite3_bind_int(stmt, 2, max_results);
     }
     
+    // First pass: count results
+    int count = 0;
+    while (sqlite3_step(stmt) == SQLITE_ROW) {
+        count++;
+    }
+    sqlite3_reset(stmt);
+    
     // Allocate result array
-    SearchResult *results = calloc(max_results + 1, sizeof(SearchResult));
+    SearchResult *results = calloc(count + 1, sizeof(SearchResult));
     int i = 0;
     
-    while (sqlite3_step(stmt) == SQLITE_ROW && i < max_results) {
+    while (sqlite3_step(stmt) == SQLITE_ROW) {
         const unsigned char *name = sqlite3_column_text(stmt, 0);
         const unsigned char *module = sqlite3_column_text(stmt, 1);
         const unsigned char *desc = sqlite3_column_text(stmt, 2);

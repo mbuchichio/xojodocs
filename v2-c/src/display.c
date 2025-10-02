@@ -146,6 +146,7 @@ void display_help(void) {
     printf("  xojodoc -c <class_name>        Show class details\n");
     printf("  xojodoc -c <class> -m <method> Show specific method details\n");
     printf("  xojodoc -c <class> -DPMS       Filter sections (D=desc, P=props, M=methods, S=sample)\n");
+    printf("  xojodoc --deprecated <search>  Include deprecated classes in search\n");
     printf("  xojodoc --help                 Show this help\n");
     printf("  xojodoc --version              Show version\n\n");
     
@@ -154,8 +155,11 @@ void display_help(void) {
     printf("    timer          Matches 'Timer', 'WebTimer', 'IOSTimer', etc.\n");
     printf("    desk           Matches 'Desktop*', 'DeskHelper', etc.\n");
     printf("  \n");
+    printf("  By default, deprecated classes are excluded (API2 compatibility).\n");
+    printf("  Use --deprecated or -dep to include them.\n");
+    printf("  \n");
     printf("  List all:\n");
-    printf("    *              Shows all classes (up to 20 results)\n\n");
+    printf("    *              Shows all classes (use 'more' or '| Select-Object -First N' to page)\n\n");
     
     printf("SECTION FILTERS:\n");
     printf("  -D                             Show only description\n");
@@ -168,7 +172,9 @@ void display_help(void) {
     printf("EXAMPLES:\n");
     printf("  xojodoc timer                  Find classes starting with 'timer'\n");
     printf("  xojodoc desk                   Find all Desktop* classes\n");
-    printf("  xojodoc *                      List all classes\n");
+    printf("  xojodoc *                      List all classes (excluding deprecated)\n");
+    printf("  xojodoc --deprecated *         List all classes (including deprecated)\n");
+    printf("  xojodoc -dep timer             Find timer classes including deprecated ones\n");
     printf("  xojodoc -c Timer               Show Timer class details (all sections)\n");
     printf("  xojodoc -c Timer -P            Show only Timer properties\n");
     printf("  xojodoc -c Timer -PM           Show Timer properties and methods\n");
