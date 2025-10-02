@@ -1,4 +1,4 @@
-# Python
+# Python (v1-python only)
 __pycache__/
 *.py[cod]
 *$py.class
@@ -30,6 +30,12 @@ ENV/
 env.bak/
 venv.bak/
 .venv/
+
+# Xojo
+xojo/Builds/
+*.xojo_uistate
+*.debug
+*.debug.app
 
 # IDE
 .vscode/
