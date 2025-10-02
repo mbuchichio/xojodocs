@@ -1,0 +1,106 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build (MSYS2 MinGW)",
+            "type": "shell",
+            "command": "gcc",
+            "args": [
+                "-g",
+                "-Wall",
+                "-Wextra",
+                "-o",
+                "${workspaceFolder}/xojodoc.exe",
+                "${workspaceFolder}/src/main.c",
+                "${workspaceFolder}/src/database.c",
+                "${workspaceFolder}/src/display.c",
+                "-lsqlite3"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": ["$gcc"],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "Build Release (Optimized)",
+            "type": "shell",
+            "command": "gcc",
+            "args": [
+                "-O2",
+                "-Wall",
+                "-Wextra",
+                "-o",
+                "${workspaceFolder}/xojodoc.exe",
+                "${workspaceFolder}/src/main.c",
+                "${workspaceFolder}/src/database.c",
+                "${workspaceFolder}/src/display.c",
+                "-lsqlite3",
+                "-s"
+            ],
+            "group": "build",
+            "problemMatcher": ["$gcc"]
+        },
+        {
+            "label": "Build Static (Embedded SQLite)",
+            "type": "shell",
+            "command": "gcc",
+            "args": [
+                "-O2",
+                "-Wall",
+                "-DSQLITE_THREADSAFE=0",
+                "-DSQLITE_OMIT_LOAD_EXTENSION",
+                "-o",
+                "${workspaceFolder}/xojodoc.exe",
+                "${workspaceFolder}/src/main.c",
+                "${workspaceFolder}/src/database.c",
+                "${workspaceFolder}/src/display.c",
+                "${workspaceFolder}/sqlite3.c",
+                "-s"
+            ],
+            "group": "build",
+            "problemMatcher": ["$gcc"]
+        },
+        {
+            "label": "Clean",
+            "type": "shell",
+            "command": "Remove-Item",
+            "args": [
+                "-Force",
+                "-ErrorAction",
+                "SilentlyContinue",
+                "xojodoc.exe",
+                "src/*.o"
+            ],
+            "presentation": {
+                "echo": true,
+                "reveal": "silent"
+            }
+        },
+        {
+            "label": "Run",
+            "type": "shell",
+            "command": "${workspaceFolder}/xojodoc.exe",
+            "args": [],
+            "dependsOn": "Build (MSYS2 MinGW)",
+            "problemMatcher": []
+        },
+        {
+            "label": "Test Search",
+            "type": "shell",
+            "command": "${workspaceFolder}/xojodoc.exe",
+            "args": ["timer"],
+            "dependsOn": "Build (MSYS2 MinGW)",
+            "problemMatcher": []
+        }
+    ]
+}

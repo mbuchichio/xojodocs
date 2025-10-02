@@ -1,0 +1,18 @@
+# Compiled binaries
+*.exe
+*.o
+*.obj
+
+# SQLite database
+xojo.db
+
+# DLLs
+*.dll
+
+# SQLite amalgamation
+sqlite3.c
+sqlite3.h
+
+# Build artifacts
+*.pdb
+*.ilk
