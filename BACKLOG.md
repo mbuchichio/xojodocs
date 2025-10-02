@@ -12,10 +12,10 @@ Timeline and pending tasks for XojoDoc development.
 - [x] Create initial project structure
 - [x] Document vision and architecture in README
 - [x] Setup changelog and backlog
-- [ ] Analyze source HTML structure
-  - [ ] Identify patterns in HTML files
-  - [ ] Map structure of classes, methods, properties
-  - [ ] Document code example format
+- [x] Analyze source HTML structure
+  - [x] Identify patterns in HTML files
+  - [x] Map structure of classes, methods, properties
+  - [x] Document code example format
 - [ ] Design SQLite database schema
   - [ ] Classes table
   - [ ] Methods/properties table

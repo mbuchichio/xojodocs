@@ -7,8 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- Python project structure with pyproject.toml
+- MIT License
+- Source package structure in `src/xojodoc/`
+- HTML structure analysis document (`docs/HTML_STRUCTURE.md`)
+- Database schema design for SQLite + FTS5
+
 ### Planned
-- HTML parser to extract class and method documentation
+- HTML parser implementation with BeautifulSoup
 - Indexing system with SQLite + FTS5
 - Basic CLI with simple search
 - Interactive TUI with rich/textual
