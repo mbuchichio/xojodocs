@@ -1,177 +1,179 @@
 # Backlog - XojoDoc
 
-Timeline y tareas pendientes para el desarrollo de XojoDoc.
+Timeline and pending tasks for XojoDoc development.
+
+**Repository:** [github.com/mbuchichio/xojodocs](https://github.com/mbuchichio/xojodocs)
 
 ---
 
-## 🎯 MVP - Versión 0.1.0 (Meta: 2-3 semanas)
+## 🎯 MVP - Version 0.1.0 (Goal: 2-3 weeks)
 
-### Sprint 1: Análisis y Arquitectura (Días 1-3)
-- [x] Crear estructura inicial del proyecto
-- [x] Documentar visión y arquitectura en README
-- [x] Configurar changelog y backlog
-- [ ] Analizar estructura de HTML fuente
-  - [ ] Identificar patrones en archivos HTML
-  - [ ] Mapear estructura de clases, métodos, propiedades
-  - [ ] Documentar formato de ejemplos de código
-- [ ] Diseñar esquema de base de datos SQLite
-  - [ ] Tabla de clases
-  - [ ] Tabla de métodos/propiedades
-  - [ ] Índices FTS5 para búsqueda
-- [ ] Definir estructura de proyecto Python
-  - [ ] Configurar pyproject.toml / requirements.txt
-  - [ ] Definir módulos principales
+### Sprint 1: Analysis and Architecture (Days 1-3)
+- [x] Create initial project structure
+- [x] Document vision and architecture in README
+- [x] Setup changelog and backlog
+- [ ] Analyze source HTML structure
+  - [ ] Identify patterns in HTML files
+  - [ ] Map structure of classes, methods, properties
+  - [ ] Document code example format
+- [ ] Design SQLite database schema
+  - [ ] Classes table
+  - [ ] Methods/properties table
+  - [ ] FTS5 indexes for search
+- [ ] Define Python project structure
+  - [ ] Configure pyproject.toml / requirements.txt
+  - [ ] Define main modules
 
-### Sprint 2: Parser e Indexador (Días 4-7)
-- [ ] Implementar `indexer.py`
-  - [ ] Parser HTML con BeautifulSoup
-  - [ ] Extracción de clases y métodos
-  - [ ] Extracción de descripciones y ejemplos
-  - [ ] Limpieza de HTML a texto plano/markdown
-- [ ] Implementar base de datos SQLite
-  - [ ] Crear esquema inicial
-  - [ ] Configurar FTS5 para búsqueda full-text
-  - [ ] Scripts de migración
-- [ ] Testear indexación completa
-  - [ ] Verificar todas las clases se indexan
-  - [ ] Validar calidad de extracción
-  - [ ] Medir tiempos de indexación
+### Sprint 2: Parser and Indexer (Days 4-7)
+- [ ] Implement `indexer.py`
+  - [ ] HTML parser with BeautifulSoup
+  - [ ] Extract classes and methods
+  - [ ] Extract descriptions and examples
+  - [ ] Clean HTML to plain text/markdown
+- [ ] Implement SQLite database
+  - [ ] Create initial schema
+  - [ ] Configure FTS5 for full-text search
+  - [ ] Migration scripts
+- [ ] Test complete indexing
+  - [ ] Verify all classes are indexed
+  - [ ] Validate extraction quality
+  - [ ] Measure indexing times
 
-### Sprint 3: CLI Básico (Días 8-10)
-- [ ] Implementar `xojodoc.py`
-  - [ ] Entry point con argumentos CLI
-  - [ ] Búsqueda básica por nombre de clase/método
-  - [ ] Output formateado a terminal
-  - [ ] Manejo de errores básico
-- [ ] Modo query simple
-  - [ ] `xojodoc NombreClase` → mostrar info de clase
-  - [ ] `xojodoc NombreClase.Metodo` → mostrar info de método
-  - [ ] Búsqueda fuzzy si no hay match exacto
-- [ ] Tests básicos de CLI
+### Sprint 3: Basic CLI (Days 8-10)
+- [ ] Implement `xojodoc.py`
+  - [ ] Entry point with CLI arguments
+  - [ ] Basic search by class/method name
+  - [ ] Formatted terminal output
+  - [ ] Basic error handling
+- [ ] Simple query mode
+  - [ ] `xojodoc ClassName` → show class info
+  - [ ] `xojodoc ClassName.Method` → show method info
+  - [ ] Fuzzy search if no exact match
+- [ ] Basic CLI tests
 
-### Sprint 4: TUI Interactivo (Días 11-14)
-- [ ] Implementar `tui.py`
-  - [ ] Interfaz básica con rich/textual
-  - [ ] Panel de navegación de clases
-  - [ ] Panel de contenido con scroll
-  - [ ] Búsqueda en tiempo real
-- [ ] Navegación estilo man/less
-  - [ ] Atajos de teclado (q, /, hjkl)
-  - [ ] Scroll suave
-  - [ ] Highlighting de sintaxis
-- [ ] Pulir UX interactivo
+### Sprint 4: Interactive TUI (Days 11-14)
+- [ ] Implement `tui.py`
+  - [ ] Basic interface with rich/textual
+  - [ ] Class navigation panel
+  - [ ] Content panel with scroll
+  - [ ] Real-time search
+- [ ] man/less-style navigation
+  - [ ] Keyboard shortcuts (q, /, hjkl)
+  - [ ] Smooth scrolling
+  - [ ] Syntax highlighting
+- [ ] Polish interactive UX
 
-### Sprint 5: Export para AI (Días 15-17)
-- [ ] Implementar `exporter.py`
-  - [ ] Modo `--export-for-ai`
-  - [ ] Selección de top 100 métodos más comunes
-  - [ ] Generación de markdown optimizado
-  - [ ] Incluir patrones comunes y gotchas
-- [ ] Documentar uso para AI assistants
-  - [ ] Instrucciones de integración con Claude/GPT
-  - [ ] Ejemplos de prompts efectivos
+### Sprint 5: AI Export (Days 15-17)
+- [ ] Implement `exporter.py`
+  - [ ] `--export-for-ai` mode
+  - [ ] Select top 100 most common methods
+  - [ ] Generate optimized markdown
+  - [ ] Include common patterns and gotchas
+- [ ] Document usage for AI assistants
+  - [ ] Integration instructions with Claude/GPT
+  - [ ] Effective prompt examples
 
-### Sprint 6: Pulido y Documentación (Días 18-21)
-- [ ] Tests completos
-  - [ ] Unit tests para parser
-  - [ ] Integration tests para CLI
-  - [ ] Tests de TUI (manual)
-- [ ] Documentación de usuario
-  - [ ] Guía de instalación
-  - [ ] Ejemplos de uso
+### Sprint 6: Polish and Documentation (Days 18-21)
+- [ ] Complete tests
+  - [ ] Unit tests for parser
+  - [ ] Integration tests for CLI
+  - [ ] TUI tests (manual)
+- [ ] User documentation
+  - [ ] Installation guide
+  - [ ] Usage examples
   - [ ] Troubleshooting
 - [ ] Packaging
-  - [ ] Configurar setup.py / pyproject.toml
-  - [ ] Scripts de instalación
-  - [ ] Verificar dependencias
+  - [ ] Configure setup.py / pyproject.toml
+  - [ ] Installation scripts
+  - [ ] Verify dependencies
 - [ ] Release MVP 0.1.0
 
 ---
 
-## 🚀 Fase 2: Mejoras Post-MVP (1-2 meses)
+## 🚀 Phase 2: Post-MVP Improvements (1-2 months)
 
-### Funcionalidades Mejoradas
-- [ ] Búsqueda avanzada con filtros
-- [ ] Historial de búsquedas
-- [ ] Favoritos/bookmarks
-- [ ] Exportar resultados a archivo
-- [ ] Sintaxis highlighting mejorado
-- [ ] Temas de color personalizables
+### Enhanced Features
+- [ ] Advanced search with filters
+- [ ] Search history
+- [ ] Favorites/bookmarks
+- [ ] Export results to file
+- [ ] Improved syntax highlighting
+- [ ] Customizable color themes
 
-### Integración y Automatización
-- [ ] Auto-actualización de documentación
-- [ ] Detección de versión de Xojo
-- [ ] Múltiples versiones de docs en paralelo
-- [ ] Integración con VS Code vía extension
-- [ ] Integración con otros editores
+### Integration and Automation
+- [ ] Auto-update documentation
+- [ ] Xojo version detection
+- [ ] Multiple doc versions in parallel
+- [ ] VS Code integration via extension
+- [ ] Integration with other editors
 
-### Análisis de Código Usuario
-- [ ] Escanear proyectos Xojo del usuario
-- [ ] Generar contexto personalizado basado en uso
-- [ ] Sugerencias de métodos relacionados
-- [ ] Detección de patrones comunes en proyectos
+### User Code Analysis
+- [ ] Scan user's Xojo projects
+- [ ] Generate personalized context based on usage
+- [ ] Related method suggestions
+- [ ] Common pattern detection in projects
 
 ---
 
-## 🌟 Fase 3: Comunidad y Expansión (3+ meses)
+## 🌟 Phase 3: Community and Expansion (3+ months)
 
 ### Open Source
-- [ ] Preparar para release público
-- [ ] Licencia y contribución guidelines
-- [ ] CI/CD con GitHub Actions
-- [ ] Publicar en PyPI
+- [ ] Prepare for public release
+- [ ] License and contribution guidelines
+- [ ] CI/CD with GitHub Actions
+- [ ] Publish to PyPI
 - [ ] Website/landing page
 
 ### LSP (Language Server Protocol)
-- [ ] Implementar Xojo Language Server
-- [ ] Autocompletado con contexto
+- [ ] Implement Xojo Language Server
+- [ ] Context-aware autocomplete
 - [ ] Hover documentation
 - [ ] Go to definition
-- [ ] Integración universal con editores
+- [ ] Universal editor integration
 
-### Comunidad
-- [ ] Compartir con foro Xojo
+### Community
+- [ ] Share with Xojo forum
 - [ ] Tutorial videos
-- [ ] Blog posts sobre el proyecto
-- [ ] Recopilar feedback de usuarios
-- [ ] Roadmap guiado por comunidad
+- [ ] Blog posts about the project
+- [ ] Gather user feedback
+- [ ] Community-driven roadmap
 
 ---
 
-## 📊 Métricas de Éxito
+## 📊 Success Metrics
 
 ### MVP
-- [ ] Indexar 100% de clases core de Xojo
-- [ ] Tiempo de búsqueda < 100ms
-- [ ] TUI responsive y estable
-- [ ] Export genera contexto útil para AI
+- [ ] Index 100% of core Xojo classes
+- [ ] Search time < 100ms
+- [ ] Responsive and stable TUI
+- [ ] Export generates useful AI context
 
 ### Post-MVP
-- [ ] 50+ usuarios activos
-- [ ] Reducción medible de errores en código generado por AI
-- [ ] Feedback positivo de comunidad Xojo
-- [ ] Contributors externos al proyecto
+- [ ] 50+ active users
+- [ ] Measurable reduction in AI-generated code errors
+- [ ] Positive feedback from Xojo community
+- [ ] External project contributors
 
 ---
 
-## 🐛 Bugs Conocidos
+## 🐛 Known Bugs
 
-_(Ninguno todavía - proyecto en fase inicial)_
-
----
-
-## 💡 Ideas Futuras (Icebox)
-
-- [ ] Plugin para Xojo IDE
-- [ ] Modo offline completo con cache
-- [ ] Sincronización de notas/anotaciones personales
-- [ ] Integración con Stack Overflow para ejemplos
-- [ ] Generador de snippets desde documentación
-- [ ] Modo tutorial interactivo para aprender Xojo
-- [ ] Comparador de versiones de API entre versiones Xojo
-- [ ] AI local para responder preguntas sobre docs
+_(None yet - project in initial phase)_
 
 ---
 
-**Última actualización:** 2025-10-02  
-**Estado actual:** Sprint 1 - Análisis y Arquitectura
+## 💡 Future Ideas (Icebox)
+
+- [ ] Plugin for Xojo IDE
+- [ ] Complete offline mode with cache
+- [ ] Personal notes/annotations sync
+- [ ] Stack Overflow integration for examples
+- [ ] Snippet generator from documentation
+- [ ] Interactive tutorial mode to learn Xojo
+- [ ] API version comparator between Xojo versions
+- [ ] Local AI to answer questions about docs
+
+---
+
+**Last updated:** 2025-10-02  
+**Current status:** Sprint 1 - Analysis and Architecture

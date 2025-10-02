@@ -1,47 +1,47 @@
 # Changelog
 
-Todos los cambios notables en el proyecto XojoDoc serán documentados en este archivo.
+All notable changes to the XojoDoc project will be documented in this file.
 
-El formato está basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/),
-y este proyecto adhiere a [Semantic Versioning](https://semver.org/lang/es/).
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
-### Planeado
-- Parser HTML para extraer documentación de clases y métodos
-- Sistema de indexación con SQLite + FTS5
-- CLI básico con búsqueda simple
-- TUI interactivo con rich/textual
-- Modo export para contexto de AI
+### Planned
+- HTML parser to extract class and method documentation
+- Indexing system with SQLite + FTS5
+- Basic CLI with simple search
+- Interactive TUI with rich/textual
+- Export mode for AI context
 
 ---
 
 ## [0.0.1] - 2025-10-02
 
-### Añadido
-- Inicialización del proyecto XojoDoc
-- README.md con visión, arquitectura y objetivos del proyecto
-- CHANGELOG.md para seguimiento de cambios
-- BACKLOG.md para gestión de tareas y timeline
-- Documentación fuente HTML de Xojo en `/html/`
+### Added
+- XojoDoc project initialization
+- README.md with project vision, architecture and objectives
+- CHANGELOG.md for change tracking
+- BACKLOG.md for task management and timeline
+- Xojo HTML source documentation in `/html/`
 
-### Contexto
-- Proyecto iniciado para resolver la falta de acceso CLI a documentación Xojo
-- Objetivo: Reducir fricción de desarrollo con AI assistants de 80% a ~30%
-- Primera versión enfocada en MVP con funcionalidad básica
+### Context
+- Project initiated to solve lack of CLI access to Xojo documentation
+- Goal: Reduce development friction with AI assistants from 80% to ~30%
+- First version focused on MVP with basic functionality
 
 ---
 
-## Notas de Versiones
+## Version Notes
 
-### Formato
-- **[Añadido]** para nuevas funcionalidades
-- **[Cambiado]** para cambios en funcionalidad existente
-- **[Deprecado]** para funcionalidades que serán removidas
-- **[Removido]** para funcionalidades ya removidas
-- **[Arreglado]** para corrección de bugs
-- **[Seguridad]** para vulnerabilidades
+### Format
+- **[Added]** for new features
+- **[Changed]** for changes in existing functionality
+- **[Deprecated]** for features that will be removed
+- **[Removed]** for features already removed
+- **[Fixed]** for bug fixes
+- **[Security]** for vulnerabilities
 
 ### Enlaces
-[Unreleased]: https://github.com/tuusuario/xojodoc/compare/v0.0.1...HEAD
-[0.0.1]: https://github.com/tuusuario/xojodoc/releases/tag/v0.0.1
+[Unreleased]: https://github.com/mbuchichio/xojodocs/compare/v0.0.1...HEAD
+[0.0.1]: https://github.com/mbuchichio/xojodocs/releases/tag/v0.0.1

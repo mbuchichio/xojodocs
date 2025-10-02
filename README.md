@@ -1,61 +1,67 @@
-## XojoDoc - Sistema de Documentación CLI para Xojo
+## XojoDoc - CLI Documentation System for Xojo
 
-### Visión del Proyecto
-**XojoDoc** es una herramienta de documentación CLI independiente para el lenguaje Xojo, inspirada en `man` de Unix. Resuelve un problema crítico en el ecosistema Xojo: la falta de acceso rápido a documentación desde terminal y la fricción que esto genera al usar AI assistants para desarrollo.
+[![GitHub](https://img.shields.io/badge/GitHub-xojodocs-blue?logo=github)](https://github.com/mbuchichio/xojodocs)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/)
 
-### Problema que Resuelve
-- No existe herramienta CLI para consultar documentación de Xojo
-- Desarrolladores pierden ~80% del tiempo corrigiendo código generado por AI que no conoce la sintaxis Xojo
-- La documentación solo es accesible vía IDE o web, no optimizada para workflow de desarrollo moderno
-- AI assistants (Claude, GPT, Copilot) generan código incorrecto por falta de contexto sobre Xojo
+### Project Vision
+**XojoDoc** is an independent CLI documentation tool for the Xojo language, inspired by Unix's `man` command. It solves a critical problem in the Xojo ecosystem: the lack of quick terminal access to documentation and the friction this creates when using AI assistants for development.
 
-### Arquitectura Técnica Propuesta
+**Repository:** [github.com/mbuchichio/xojodocs](https://github.com/mbuchichio/xojodocs)
+
+### Problem It Solves
+- No CLI tool exists to query Xojo documentation
+- Developers waste ~80% of time fixing AI-generated code that doesn't know Xojo syntax
+- Documentation is only accessible via IDE or web, not optimized for modern development workflow
+- AI assistants (Claude, GPT, Copilot) generate incorrect code due to lack of context about Xojo
+
+### Proposed Technical Architecture
 
 **Stack:**
-- Python con BeautifulSoup para parsing HTML
-- SQLite con FTS5 para búsqueda full-text indexada  
-- TUI con rich/textual para modo interactivo
-- Documentación fuente: HTML local de Xojo (ya disponible)
+- Python with BeautifulSoup for HTML parsing
+- SQLite with FTS5 for indexed full-text search
+- TUI with rich/textual for interactive mode
+- Source documentation: Local Xojo HTML (already available)
 
-**Componentes:**
+**Components:**
 ```
 xojodoc/
-├── xojodoc.py         # CLI principal y entry point
-├── indexer.py         # Parser HTML → SQLite con FTS5
-├── tui.py             # Interfaz interactiva tipo man/less
-├── exporter.py        # Generador de contexto para AI
-└── xojo.db            # Base de datos indexada
+├── xojodoc.py         # Main CLI and entry point
+├── indexer.py         # HTML Parser → SQLite with FTS5
+├── tui.py             # Interactive man/less-like interface
+├── exporter.py        # AI context generator
+└── xojo.db            # Indexed database
 ```
 
-### Modos de Operación
+### Operation Modes
 
-1. **Modo Interactivo** (`xojodoc`)
-   - TUI navegable con panel de clases/métodos
-   - Búsqueda en tiempo real
-   - Navegación tipo man/less
+1. **Interactive Mode** (`xojodoc`)
+   - Navigable TUI with class/method panel
+   - Real-time search
+   - man/less-style navigation
 
-2. **Modo Query** (`xojodoc Graphics.DrawString`)
-   - Output directo a terminal
-   - Integrable en scripts y workflows
+2. **Query Mode** (`xojodoc Graphics.DrawString`)
+   - Direct terminal output
+   - Scriptable and workflow-integrable
 
-3. **Modo Export** (`xojodoc --export-for-ai`)
-   - Genera archivo markdown con contexto Xojo para AI
-   - Incluye sintaxis correcta, patrones comunes, gotchas
+3. **Export Mode** (`xojodoc --export-for-ai`)
+   - Generate markdown file with Xojo context for AI
+   - Include correct syntax, common patterns, gotchas
 
-### Impacto Esperado
-- Reducir fricción de desarrollo con Xojo de 80% a ~30%
-- Beneficiar a toda la comunidad Xojo (no existe competencia)
-- Mejorar dramáticamente la calidad del código generado por AI
-- Acelerar desarrollo de aplicaciones Xojo
+### Expected Impact
+- Reduce Xojo development friction from 80% to ~30%
+- Benefit the entire Xojo community (no competition exists)
+- Dramatically improve AI-generated code quality
+- Accelerate Xojo application development
 
-### MVP - Primera Versión
-- Parsear documentación HTML básica (clases, métodos, sintaxis)
-- Búsqueda por comando simple
-- Export de los 100 métodos más comunes
-- TUI básica para navegación
+### MVP - First Version
+- Parse basic HTML documentation (classes, methods, syntax)
+- Simple command-line search
+- Export of top 100 most common methods
+- Basic TUI for navigation
 
-### Expansión Futura
-- Análisis de código del usuario para contexto personalizado
-- Integración con editores vía LSP
-- Compartir con comunidad Xojo como proyecto open source
-- Auto-actualización cuando cambie la documentación
+### Future Expansion
+- User code analysis for personalized context
+- Editor integration via LSP
+- Share with Xojo community as open source project
+- Auto-update when documentation changes
