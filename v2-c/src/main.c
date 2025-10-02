@@ -81,15 +81,47 @@ int main(int argc, char *argv[]) {
         return 1;
     }
     
-    // -c CLASS [-m METHOD]
+    // -c CLASS [-m METHOD] [-DPMS]
     if (strcmp(command, "-c") == 0) {
         if (argc < 3) {
-            display_error("Usage: xojodoc -c <class> [-m <method>]");
+            display_error("Usage: xojodoc -c <class> [-m <method>] [-DPMS]");
             db_close(db);
             return 1;
         }
         
         const char *class_name = argv[2];
+        int sections = 0;  // 0 means SECTION_ALL
+        int member_index = -1;
+        const char *member_name = NULL;
+        
+        // Parse optional flags
+        for (int i = 3; i < argc; i++) {
+            if (strcmp(argv[i], "-m") == 0 && i + 1 < argc) {
+                member_name = argv[i + 1];
+                member_index = i;
+                i++;  // Skip next arg
+            } else if (argv[i][0] == '-') {
+                // Parse section flags: -D, -P, -M, -S
+                for (int j = 1; argv[i][j] != '\0'; j++) {
+                    switch (argv[i][j]) {
+                        case 'D': sections |= SECTION_DESCRIPTION; break;
+                        case 'P': sections |= SECTION_PROPERTIES; break;
+                        case 'M': sections |= SECTION_METHODS; break;
+                        case 'S': sections |= SECTION_SAMPLE; break;
+                        default:
+                            fprintf(stderr, "Unknown flag: -%c\n", argv[i][j]);
+                            fprintf(stderr, "Valid flags: -D (description), -P (properties), -M (methods), -S (sample)\n");
+                            db_close(db);
+                            return 1;
+                    }
+                }
+            }
+        }
+        
+        // If no sections specified, show all
+        if (sections == 0) {
+            sections = SECTION_ALL;
+        }
         
         // Get class info
         ClassInfo *class_info = db_get_class(db, class_name);
@@ -100,8 +132,7 @@ int main(int argc, char *argv[]) {
         }
         
         // If -m specified, show only method/property
-        if (argc >= 5 && strcmp(argv[3], "-m") == 0) {
-            const char *member_name = argv[4];
+        if (member_name) {
             
             // Search in properties first
             MemberInfo *properties = db_get_properties(db, class_info->id);
@@ -152,11 +183,11 @@ int main(int argc, char *argv[]) {
             
             db_free_member_info(properties);
         } else {
-            // Show full class details
+            // Show full class details with section filters
             MemberInfo *properties = db_get_properties(db, class_info->id);
             MemberInfo *methods = db_get_methods(db, class_info->id);
             
-            display_class_details(class_info, properties, methods);
+            display_class_details(class_info, properties, methods, sections);
             
             db_free_member_info(properties);
             db_free_member_info(methods);

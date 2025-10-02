@@ -73,7 +73,7 @@ void display_search_results(const SearchResult *results) {
     fflush(stdout);
 }
 
-void display_class_details(const ClassInfo *info, const MemberInfo *properties, const MemberInfo *methods) {
+void display_class_details(const ClassInfo *info, const MemberInfo *properties, const MemberInfo *methods, int sections) {
     if (!info) {
         printf("Class not found.\n");
         return;
@@ -83,7 +83,8 @@ void display_class_details(const ClassInfo *info, const MemberInfo *properties, 
     printf("%s%s%s\n", C_BOLD, info->name, C_RESET);
     printf("Module: %s%s%s\n", C_CYAN, info->module, C_RESET);
     
-    if (info->description) {
+    // Description
+    if ((sections & SECTION_DESCRIPTION) && info->description) {
         printf("\nDescription:\n%s\n", info->description);
     }
     
@@ -92,7 +93,7 @@ void display_class_details(const ClassInfo *info, const MemberInfo *properties, 
     }
     
     // Properties
-    if (properties && properties[0].name) {
+    if ((sections & SECTION_PROPERTIES) && properties && properties[0].name) {
         printf("\n%sPROPERTIES:%s\n", C_GREEN, C_RESET);
         
         for (int i = 0; properties[i].name != NULL; i++) {
@@ -111,7 +112,7 @@ void display_class_details(const ClassInfo *info, const MemberInfo *properties, 
     }
     
     // Methods
-    if (methods && methods[0].name) {
+    if ((sections & SECTION_METHODS) && methods && methods[0].name) {
         printf("\n%sMETHODS:%s\n", C_GREEN, C_RESET);
         
         for (int i = 0; methods[i].name != NULL; i++) {
@@ -129,7 +130,8 @@ void display_class_details(const ClassInfo *info, const MemberInfo *properties, 
         }
     }
     
-    if (info->sample_code) {
+    // Sample code
+    if ((sections & SECTION_SAMPLE) && info->sample_code) {
         printf("\n%sSAMPLE CODE:%s\n", C_YELLOW, C_RESET);
         printf("%s\n", info->sample_code);
     }
@@ -143,6 +145,7 @@ void display_help(void) {
     printf("  xojodoc <search_term>          Search for classes, properties, methods\n");
     printf("  xojodoc -c <class_name>        Show class details\n");
     printf("  xojodoc -c <class> -m <method> Show specific method details\n");
+    printf("  xojodoc -c <class> -DPMS       Filter sections (D=desc, P=props, M=methods, S=sample)\n");
     printf("  xojodoc --help                 Show this help\n");
     printf("  xojodoc --version              Show version\n\n");
     
@@ -154,11 +157,21 @@ void display_help(void) {
     printf("  List all:\n");
     printf("    *              Shows all classes (up to 20 results)\n\n");
     
+    printf("SECTION FILTERS:\n");
+    printf("  -D                             Show only description\n");
+    printf("  -P                             Show only properties\n");
+    printf("  -M                             Show only methods\n");
+    printf("  -S                             Show only sample code\n");
+    printf("  -PM                            Show properties and methods (no desc/sample)\n");
+    printf("  (default: show all sections)\n\n");
+    
     printf("EXAMPLES:\n");
     printf("  xojodoc timer                  Find classes starting with 'timer'\n");
     printf("  xojodoc desk                   Find all Desktop* classes\n");
     printf("  xojodoc *                      List all classes\n");
-    printf("  xojodoc -c Timer               Show Timer class details\n");
+    printf("  xojodoc -c Timer               Show Timer class details (all sections)\n");
+    printf("  xojodoc -c Timer -P            Show only Timer properties\n");
+    printf("  xojodoc -c Timer -PM           Show Timer properties and methods\n");
     printf("  xojodoc -c Timer -m RunMode    Show Timer.RunMode details\n\n");
     
     printf("DATABASE:\n");
