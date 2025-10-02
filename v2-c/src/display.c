@@ -146,8 +146,18 @@ void display_help(void) {
     printf("  xojodoc --help                 Show this help\n");
     printf("  xojodoc --version              Show version\n\n");
     
+    printf("SEARCH:\n");
+    printf("  Fuzzy prefix matching (automatic):\n");
+    printf("    timer          Matches 'Timer', 'WebTimer', 'IOSTimer', etc.\n");
+    printf("    desk           Matches 'Desktop*', 'DeskHelper', etc.\n");
+    printf("  \n");
+    printf("  List all:\n");
+    printf("    *              Shows all classes (up to 20 results)\n\n");
+    
     printf("EXAMPLES:\n");
-    printf("  xojodoc timer                  Find all classes matching 'timer'\n");
+    printf("  xojodoc timer                  Find classes starting with 'timer'\n");
+    printf("  xojodoc desk                   Find all Desktop* classes\n");
+    printf("  xojodoc *                      List all classes\n");
     printf("  xojodoc -c Timer               Show Timer class details\n");
     printf("  xojodoc -c Timer -m RunMode    Show Timer.RunMode details\n\n");
     

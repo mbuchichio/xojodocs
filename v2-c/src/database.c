@@ -27,24 +27,49 @@ void db_close(sqlite3 *db) {
 }
 
 SearchResult* db_search(sqlite3 *db, const char *query, int max_results) {
-    const char *sql = 
-        "SELECT c.name, c.module, c.description "
-        "FROM classes c "
-        "JOIN search_index si ON c.id = si.rowid "
-        "WHERE search_index MATCH ? "
-        "ORDER BY rank "
-        "LIMIT ?";
-    
     sqlite3_stmt *stmt;
-    int rc = sqlite3_prepare_v2(db, sql, -1, &stmt, NULL);
+    int rc;
     
-    if (rc != SQLITE_OK) {
-        fprintf(stderr, "SQL error: %s\n", sqlite3_errmsg(db));
-        return NULL;
+    // Special case: * means list all (no FTS search)
+    if (strcmp(query, "*") == 0) {
+        const char *sql = 
+            "SELECT name, module, description "
+            "FROM classes "
+            "ORDER BY name "
+            "LIMIT ?";
+        
+        rc = sqlite3_prepare_v2(db, sql, -1, &stmt, NULL);
+        
+        if (rc != SQLITE_OK) {
+            fprintf(stderr, "SQL error: %s\n", sqlite3_errmsg(db));
+            return NULL;
+        }
+        
+        sqlite3_bind_int(stmt, 1, max_results);
+    } else {
+        // Normal FTS search with prefix matching
+        const char *sql = 
+            "SELECT c.name, c.module, c.description "
+            "FROM classes c "
+            "JOIN search_index si ON c.id = si.rowid "
+            "WHERE search_index MATCH ? "
+            "ORDER BY rank "
+            "LIMIT ?";
+        
+        rc = sqlite3_prepare_v2(db, sql, -1, &stmt, NULL);
+        
+        if (rc != SQLITE_OK) {
+            fprintf(stderr, "SQL error: %s\n", sqlite3_errmsg(db));
+            return NULL;
+        }
+        
+        // Add automatic prefix matching
+        char search_query[256];
+        snprintf(search_query, sizeof(search_query), "%s*", query);
+        
+        sqlite3_bind_text(stmt, 1, search_query, -1, SQLITE_TRANSIENT);
+        sqlite3_bind_int(stmt, 2, max_results);
     }
-    
-    sqlite3_bind_text(stmt, 1, query, -1, SQLITE_STATIC);
-    sqlite3_bind_int(stmt, 2, max_results);
     
     // Allocate result array
     SearchResult *results = calloc(max_results + 1, sizeof(SearchResult));
