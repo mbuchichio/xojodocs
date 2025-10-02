@@ -261,10 +261,10 @@ class Database:
         return cursor.lastrowid
         
     def search_classes(self, query: str) -> List[Dict[str, Any]]:
-        """Search classes using FTS5.
+        """Search classes using FTS5 with prefix matching.
         
         Args:
-            query: Search query
+            query: Search query (supports module.class format or free text with prefix matching)
             
         Returns:
             List of matching classes
@@ -273,15 +273,62 @@ class Database:
             raise RuntimeError("Database not connected")
             
         cursor = self.conn.cursor()
-        cursor.execute("""
-            SELECT c.id, c.name, c.module, c.description
-            FROM search_index s
-            JOIN classes c ON c.name = s.class_name AND c.module = s.module
-            WHERE search_index MATCH ?
-            ORDER BY rank
-        """, (query,))
         
-        return [dict(row) for row in cursor.fetchall()]
+        # Strip and validate query
+        query = query.strip()
+        if not query:
+            return []
+        
+        # Check if query is in module.class format (e.g., "Desktop.Window")
+        if '.' in query and query.count('.') == 1:
+            parts = query.split('.')
+            module_part = parts[0].strip()
+            class_part = parts[1].strip()
+            
+            if module_part and class_part:
+                # Direct search for module.class combination
+                cursor.execute("""
+                    SELECT id, name, module, description
+                    FROM classes
+                    WHERE (module LIKE ? OR LOWER(module) LIKE ?)
+                      AND (name LIKE ? OR LOWER(name) LIKE ?)
+                    ORDER BY name, module
+                """, (f'%{module_part}%', f'%{module_part.lower()}%',
+                      f'{class_part}%', f'{class_part.lower()}%'))
+                
+                results = [dict(row) for row in cursor.fetchall()]
+                if results:
+                    return results
+                # If no direct match, fall through to FTS5 search
+        
+        # Regular FTS5 search
+        import re
+        # Remove or replace problematic characters for FTS5
+        clean_query = re.sub(r'[^\w\s*]', ' ', query)
+        
+        # Add prefix matching support if query doesn't already have *
+        if '*' not in clean_query:
+            terms = clean_query.strip().split()
+            if not terms:
+                return []
+            # Add * to each term for prefix matching
+            fts_query = ' '.join(f'{term}*' for term in terms if term)
+        else:
+            fts_query = clean_query
+        
+        try:
+            cursor.execute("""
+                SELECT DISTINCT c.id, c.name, c.module, c.description
+                FROM search_index s
+                JOIN classes c ON c.name = s.class_name AND c.module = s.module
+                WHERE search_index MATCH ?
+                ORDER BY c.name, c.module
+            """, (fts_query,))
+            
+            return [dict(row) for row in cursor.fetchall()]
+        except Exception:
+            # If FTS5 query fails, return empty results
+            return []
         
     def get_class_by_name(self, name: str, module: Optional[str] = None) -> Optional[Dict[str, Any]]:
         """Get a class by name.

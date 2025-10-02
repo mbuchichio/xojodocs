@@ -22,29 +22,32 @@ class HTMLParser:
         self.api_root = self.html_root / "api"
         
     def discover_classes(self) -> List[Tuple[str, str]]:
-        """Discover all class HTML files.
+        """Discover all class HTML files recursively.
         
         Returns:
-            List of (module, file_path) tuples
+            List of (module, file_path) tuples where module is derived from directory structure
         """
         classes = []
         
         if not self.api_root.exists():
             raise FileNotFoundError(f"API root not found: {self.api_root}")
             
-        # Walk through api directory
-        for module_dir in self.api_root.iterdir():
-            if not module_dir.is_dir():
+        # Recursively find all HTML files in api directory
+        for html_file in self.api_root.rglob("*.html"):
+            if html_file.name == "index.html":
                 continue
                 
-            module_name = module_dir.name
-            
-            # Find all HTML files except index.html
-            for html_file in module_dir.glob("*.html"):
-                if html_file.name == "index.html":
-                    continue
-                    
-                classes.append((module_name, str(html_file)))
+            # Determine module from file path relative to api_root
+            # e.g., api/user_interface/desktop/desktopwindow.html -> user_interface/desktop
+            rel_path = html_file.relative_to(self.api_root)
+            if len(rel_path.parts) > 1:
+                # Use the immediate parent directory as module
+                module_name = rel_path.parent.as_posix().replace('/', '.')
+            else:
+                # File is directly in api/ directory
+                module_name = rel_path.parent.name
+                
+            classes.append((module_name, str(html_file)))
                 
         return classes
         
@@ -284,46 +287,65 @@ class HTMLParser:
         return '\n\n'.join(text_parts) if text_parts else None
         
     def _extract_property_description(self, soup: BeautifulSoup, anchor: str) -> Optional[str]:
-        """Extract detailed property description."""
+        """Extract detailed property description from blockquote after anchor."""
         if not anchor:
             return None
             
-        prop_section = soup.find('section', id=anchor)
-        if not prop_section:
+        # Find the element with this id (usually <hr>)
+        anchor_element = soup.find(id=anchor)
+        if not anchor_element:
             return None
             
-        # Skip the h3 and signature, get description paragraphs
+        # Find the blockquote that follows the anchor
+        blockquote = None
+        for sibling in anchor_element.next_siblings:
+            if hasattr(sibling, 'name') and sibling.name == 'blockquote':
+                blockquote = sibling
+                break
+                
+        if not blockquote:
+            return None
+            
+        # Extract all paragraphs from the blockquote
         paragraphs = []
-        for elem in prop_section.find_all('p'):
-            text = elem.get_text().strip()
-            # Skip signature lines (they often start with property name)
-            if not text.startswith(anchor.split('-')[-1]):
+        for p in blockquote.find_all('p'):
+            text = p.get_text().strip()
+            if text:
                 paragraphs.append(text)
                 
         return '\n\n'.join(paragraphs) if paragraphs else None
         
     def _extract_method_description(self, soup: BeautifulSoup, anchor: str) -> Tuple[Optional[str], Optional[str]]:
-        """Extract detailed method description and sample code."""
+        """Extract detailed method description and sample code from blockquote after anchor."""
         if not anchor:
             return None, None
             
-        method_section = soup.find('section', id=anchor)
-        if not method_section:
+        # Find the element with this id (usually <hr>)
+        anchor_element = soup.find(id=anchor)
+        if not anchor_element:
             return None, None
             
-        # Extract description
-        paragraphs = []
-        for elem in method_section.find_all('p', recursive=False):
-            text = elem.get_text().strip()
-            # Skip signature lines
-            if '(' in text and ')' in text and text.count('(') == 1:
-                continue
-            paragraphs.append(text)
+        # Find the blockquote that follows the anchor
+        blockquote = None
+        for sibling in anchor_element.next_siblings:
+            if hasattr(sibling, 'name') and sibling.name == 'blockquote':
+                blockquote = sibling
+                break
+                
+        if not blockquote:
+            return None, None
             
+        # Extract description from paragraphs
+        paragraphs = []
+        for p in blockquote.find_all('p'):
+            text = p.get_text().strip()
+            if text:
+                paragraphs.append(text)
+                
         description = '\n\n'.join(paragraphs) if paragraphs else None
         
-        # Extract sample code
-        code_blocks = method_section.find_all('div', class_='highlight-xojo')
+        # Extract sample code from code blocks within blockquote
+        code_blocks = blockquote.find_all('div', class_='highlight-xojo')
         codes = []
         for block in code_blocks:
             pre = block.find('pre')

@@ -188,23 +188,38 @@ class XojoDocCLI:
         if class_info['properties']:
             console.print(f"[bold]Properties ({len(class_info['properties'])}):[/bold]")
             
-            prop_table = Table(show_header=True, header_style="bold cyan")
-            prop_table.add_column("Name", style="cyan")
-            prop_table.add_column("Type", style="yellow")
-            prop_table.add_column("Flags", style="magenta")
-            
             props_to_show = class_info['properties'] if show_all else class_info['properties'][:5]
             
-            for name, ptype, desc, read_only, shared in props_to_show:
-                flags = []
-                if read_only:
-                    flags.append("RO")
-                if shared:
-                    flags.append("Shared")
-                flag_str = ", ".join(flags) if flags else "-"
-                prop_table.add_row(name, ptype or "?", flag_str)
-            
-            console.print(prop_table)
+            if show_all:
+                # Detailed view with descriptions
+                for name, ptype, desc, read_only, shared in props_to_show:
+                    flags = []
+                    if read_only:
+                        flags.append("RO")
+                    if shared:
+                        flags.append("Shared")
+                    flag_str = ", ".join(flags) if flags else "-"
+                    
+                    console.print(f"\n[cyan bold]{name}[/cyan bold] [dim]({ptype or '?'})[/dim] [magenta]{flag_str}[/magenta]")
+                    if desc:
+                        console.print(f"  {desc}")
+            else:
+                # Table view without descriptions
+                prop_table = Table(show_header=True, header_style="bold cyan")
+                prop_table.add_column("Name", style="cyan")
+                prop_table.add_column("Type", style="yellow")
+                prop_table.add_column("Flags", style="magenta")
+                
+                for name, ptype, desc, read_only, shared in props_to_show:
+                    flags = []
+                    if read_only:
+                        flags.append("RO")
+                    if shared:
+                        flags.append("Shared")
+                    flag_str = ", ".join(flags) if flags else "-"
+                    prop_table.add_row(name, ptype or "?", flag_str)
+                
+                console.print(prop_table)
             
             if not show_all and len(class_info['properties']) > 5:
                 console.print(f"[dim]... and {len(class_info['properties']) - 5} more[/dim]")
@@ -215,21 +230,41 @@ class XojoDocCLI:
         if class_info['methods']:
             console.print(f"[bold]Methods ({len(class_info['methods'])}):[/bold]")
             
-            method_table = Table(show_header=True, header_style="bold cyan")
-            method_table.add_column("Name", style="cyan")
-            method_table.add_column("Parameters", style="yellow", overflow="fold")
-            method_table.add_column("Returns", style="green")
-            method_table.add_column("Shared", style="magenta")
-            
             methods_to_show = class_info['methods'] if show_all else class_info['methods'][:5]
             
-            for name, desc, ret, params, shared, code in methods_to_show:
-                shared_str = "Yes" if shared else ""
-                ret_str = ret or "void"
-                params_str = params if params else "()"
-                method_table.add_row(name, params_str, ret_str, shared_str)
-            
-            console.print(method_table)
+            if show_all:
+                # Detailed view with descriptions and code examples
+                for name, desc, ret, params, shared, code in methods_to_show:
+                    shared_str = " [magenta](Shared)[/magenta]" if shared else ""
+                    ret_str = ret or "void"
+                    params_str = params if params else "()"
+                    
+                    console.print(f"\n[cyan bold]{name}[/cyan bold]{params_str} -> [green]{ret_str}[/green]{shared_str}")
+                    
+                    if desc:
+                        console.print(f"  {desc}")
+                    
+                    if code:
+                        console.print("\n  [dim]Example:[/dim]")
+                        # Indent code block
+                        code_lines = code.split('\n')
+                        for line in code_lines:
+                            console.print(f"    [yellow]{line}[/yellow]")
+            else:
+                # Table view without descriptions
+                method_table = Table(show_header=True, header_style="bold cyan")
+                method_table.add_column("Name", style="cyan")
+                method_table.add_column("Parameters", style="yellow", overflow="fold")
+                method_table.add_column("Returns", style="green")
+                method_table.add_column("Shared", style="magenta")
+                
+                for name, desc, ret, params, shared, code in methods_to_show:
+                    shared_str = "Yes" if shared else ""
+                    ret_str = ret or "void"
+                    params_str = params if params else "()"
+                    method_table.add_row(name, params_str, ret_str, shared_str)
+                
+                console.print(method_table)
             
             if not show_all and len(class_info['methods']) > 5:
                 console.print(f"[dim]... and {len(class_info['methods']) - 5} more[/dim]")
@@ -317,81 +352,67 @@ class XojoDocCLI:
             console.print()
 
 
-@click.group(invoke_without_command=True)
-@click.option('--db-path', default='xojo.db', help='Path to database')
-@click.pass_context
-def main(ctx, db_path):
-    """XojoDoc - CLI Documentation System for Xojo.
-    
-    Query Xojo documentation from the command line.
-    
-    Examples:
-        xojodoc search Graphics
-        xojodoc class Graphics
-        xojodoc method Graphics DrawString
-    """
-    ctx.ensure_object(dict)
-    ctx.obj['CLI'] = XojoDocCLI(db_path)
-    
-    # If no command, show help
-    if ctx.invoked_subcommand is None:
-        console.print(ctx.get_help())
-
-
-@main.command()
-@click.argument('query')
-@click.option('--limit', '-n', default=10, help='Maximum results to show')
-@click.pass_context
-def search(ctx, query, limit):
-    """Search for classes by name.
-    
-    Example: xojodoc search Graphics
-    """
-    cli = ctx.obj['CLI']
-    results = cli.search_classes(query, limit)
-    cli.display_search_results(results)
-
-
-@main.command()
-@click.argument('class_name')
+@click.command()
+@click.argument('query', required=False)
+@click.option('--class', '-c', 'show_class', metavar='NAME', help='Show detailed class information')
+@click.option('--method', '-m', 'show_method', metavar='NAME', help='Show method information (requires -c)')
+@click.option('--limit', '-l', default=10, help='Limit search results')
 @click.option('--all', '-a', is_flag=True, help='Show all properties and methods')
-@click.pass_context
-def cls(ctx, class_name, all):
-    """Show detailed information about a class.
+@click.option('--db-path', default='xojo.db', help='Path to database')
+def main(query, show_class, show_method, limit, all, db_path):
+    """XojoDoc - Command-line documentation browser for Xojo.
     
-    Example: xojodoc class Graphics
+    USAGE:
+    
+      xojodoc                      Launch interactive TUI
+      xojodoc QUERY                Search for classes
+      xojodoc -c CLASS             Show class details
+      xojodoc -c CLASS -m METHOD   Show method details
+    
+    EXAMPLES:
+    
+      xojodoc                      Interactive browser
+      xojodoc Graphics             Search for "Graphics"
+      xojodoc -c DesktopWindow     Show DesktopWindow class
+      xojodoc -c Graphics -m DrawString   Show specific method
+      xojodoc -c Color -a          Show Color with all details
     """
-    cli = ctx.obj['CLI']
-    class_info = cli.get_class_info(class_name)
+    # Initialize CLI
+    cli = XojoDocCLI(db_path)
     
-    if not class_info:
-        console.print(f"[red]Class '{class_name}' not found.[/red]")
-        console.print("\nTry searching:")
-        console.print(f"  xojodoc search {class_name}")
-        sys.exit(1)
+    # No arguments at all -> launch TUI
+    if not query and not show_class:
+        from .tui import main as tui_main
+        console.print("[cyan]Launching interactive browser...[/cyan]")
+        tui_main(cli.db.db_path)
+        return
     
-    cli.display_class(class_info, show_all=all)
-
-
-@main.command()
-@click.argument('class_name')
-@click.argument('method_name')
-@click.pass_context
-def method(ctx, class_name, method_name):
-    """Show detailed information about a method.
+    # Show class details
+    if show_class:
+        class_info = cli.get_class_info(show_class)
+        
+        if not class_info:
+            console.print(f"[red]Class '{show_class}' not found.[/red]")
+            console.print("\nTry searching:")
+            console.print(f"  xojodoc {show_class}")
+            sys.exit(1)
+        
+        # Show specific method if requested
+        if show_method:
+            method_info = cli.get_method_info(show_class, show_method)
+            if not method_info:
+                console.print(f"[red]Method '{show_class}.{show_method}' not found.[/red]")
+                sys.exit(1)
+            cli.display_method(method_info)
+        else:
+            cli.display_class(class_info, show_all=all)
+        return
     
-    Example: xojodoc method Graphics DrawString
-    """
-    cli = ctx.obj['CLI']
-    method_info = cli.get_method_info(class_name, method_name)
-    
-    if not method_info:
-        console.print(f"[red]Method '{class_name}.{method_name}' not found.[/red]")
-        console.print("\nTry showing the class:")
-        console.print(f"  xojodoc class {class_name}")
-        sys.exit(1)
-    
-    cli.display_method(method_info)
+    # Default: search
+    if query:
+        results = cli.search_classes(query, limit)
+        cli.display_search_results(results)
+        return
 
 
 if __name__ == "__main__":

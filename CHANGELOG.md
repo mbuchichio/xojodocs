@@ -1,79 +1,74 @@
-# Changelog
+# Changelog - XojoDoc
 
-All notable changes to the XojoDoc project will be documented in this file.
+Historial de cambios del proyecto.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/).
+## [2025-10-02] - Descripciones Completas ✅
 
-## [Unreleased]
+### 🎉 Agregado
+- **Descripciones completas** - Properties y methods ahora tienen documentación completa con ejemplos de código
+- **CLI con descripciones** - Flag `-a` ahora muestra descripciones completas de cada property/method
+- **Ejemplos de código** - Methods incluyen code examples con indentación y color
+- **Indexación optimizada en SSD** - Database se construye en C:\temp para mayor velocidad, luego se mueve al proyecto
+- **Script reindex.py** - Facilita reconstrucción completa de base de datos
+- **1405 clases indexadas** - Cobertura completa con parsing recursivo (vs 717 anterior)
+- **Prefix matching** - Buscar "Desk" encuentra "DesktopWindow", "DesktopButton", etc.
+- **Filtro deprecated** - Toggle con tecla `d` en TUI (ocultos por defecto)
+- **Debouncing 500ms** - Reduce queries durante escritura
+- **Search module.class** - Formato "desktop.window" soportado
+- **CLI simplificado** - `xojodoc` = TUI, `xojodoc Graphics` = search (sin subcomandos)
 
-### Added (Sprint 3) ✅
-- Basic CLI with Click framework (`cli.py`)
-- Search command: `xojodoc search <query>`
-- Class command: `xojodoc cls <ClassName>` with `--all` flag
-- Method command: `xojodoc method <ClassName> <MethodName>`
-- Rich terminal output with tables and panels
-- Error handling for not found classes/methods
-- Test suite for Sprint 3 with 6 passing tests
+### 🔧 Modificado  
+- **Parser HTML** - Reescrito para extraer de `<blockquote>` después de `<hr id="...">` (antes buscaba `<section>` incorrectamente)
+- **Sidebar TUI** - Aumentado a 40 caracteres (vs 35)
+- **Ordenamiento** - Resultados alfabéticos en todas las búsquedas
 
-### Added (Incremental Indexing)
-- Incremental indexing support - only reindexes changed files
-- Database tracks file modification times (`file_mtime`) and indexing timestamps (`indexed_at`)
-- `--force` flag to force reindex all files regardless of timestamps
-- Database migration script (`migrate_database.py`) to upgrade existing databases
-- Test suite for incremental indexing (`test_incremental.py`)
+### ✅ Corregido
+- **Descripciones NULL** - Parser ahora navega correctamente la estructura HTML con `next_siblings`
+- **Duplicados** - Agregado `DISTINCT` a queries FTS5
+- **Classes faltantes** - Parsing recursivo con `rglob()` encuentra subdirectorios
+- **Errores FTS5** - Sanitización de caracteres especiales con regex
 
-### Changed
-- Indexer now skips unchanged files by default (incremental mode)
-- Database schema updated with `file_mtime` and `indexed_at` columns in classes table
-- Improved indexing performance: ~0.2s for unchanged files vs 10+ minutes for full reindex
-
-### Added (Sprint 2)
-- Python project structure with pyproject.toml
-- MIT License
-- Source package structure in `src/xojodoc/`
-- HTML structure analysis document (`docs/HTML_STRUCTURE.md`)
-- Database schema design for SQLite + FTS5
-- HTML parser module (`parser.py`) with BeautifulSoup
-- Database management module (`database.py`) with FTS5 support
-- Indexer coordinator (`indexer.py`) for building documentation index
-- Data models: XojoClass, XojoProperty, XojoMethod
-- Test suite for Sprint 2 (`test_sprint2.py`)
-- Development documentation (`docs/DEVELOPMENT.md`)
-
-### Planned
-- Basic CLI with simple search
-- Interactive TUI with rich/textual
-- Export mode for AI context
+### 🔨 Detalles Técnicos
+- Métodos `_extract_property_description()` y `_extract_method_description()` completamente reescritos
+- Indexer soporta `temp_db_path` con auto-movimiento al finalizar
+- Schema BD: campos `description` y `sample_code` ahora populados correctamente
 
 ---
 
-## [0.0.1] - 2025-10-02
+## [Sprints 1-4] - MVP Core Completado
 
-### Added
-- XojoDoc project initialization
-- README.md with project vision, architecture and objectives
-- CHANGELOG.md for change tracking
-- BACKLOG.md for task management and timeline
-- Xojo HTML source documentation in `/html/`
+### Sprint 1 - Análisis y Arquitectura ✅
+- Estructura del proyecto
+- Análisis de HTML de Xojo
+- Diseño de schema SQLite + FTS5
 
-### Context
-- Project initiated to solve lack of CLI access to Xojo documentation
-- Goal: Reduce development friction with AI assistants from 80% to ~30%
-- First version focused on MVP with basic functionality
+### Sprint 2 - Parser e Indexer ✅
+- Parser HTML con BeautifulSoup
+- Database SQLite con FTS5
+- Indexación incremental (100x más rápido: 0.2s vs 10+ min)
+- Tracking de `file_mtime` para cambios
+
+### Sprint 3 - CLI Básico ✅  
+- CLI con Click framework
+- Search, class, method commands
+- Output formateado con Rich
+- 6 tests passing
+
+### Sprint 4 - TUI Interactivo ✅
+- TUI con Textual framework
+- Layout de dos paneles
+- Search en tiempo real
+- Navegación estilo man/less (q, /, ?, hjkl)
+- 6 tests passing
 
 ---
 
-## Version Notes
+## [2025-10-02] - Inicio del Proyecto
 
-### Format
-- **[Added]** for new features
-- **[Changed]** for changes in existing functionality
-- **[Deprecated]** for features that will be removed
-- **[Removed]** for features already removed
-- **[Fixed]** for bug fixes
-- **[Security]** for vulnerabilities
+### Creación
+- Proyecto XojoDoc iniciado
+- README con visión y arquitectura
+- Estructura básica del proyecto
 
-### Enlaces
-[Unreleased]: https://github.com/mbuchichio/xojodocs/compare/v0.0.1...HEAD
-[0.0.1]: https://github.com/mbuchichio/xojodocs/releases/tag/v0.0.1
+### Objetivo
+Reducir fricción en desarrollo Xojo con AI assistants de 80% a ~30% de tiempo perdido corrigiendo código incorrecto.
