@@ -13,7 +13,7 @@ from rich.panel import Panel
 from rich.table import Table
 from rich.text import Text
 
-from .database import Database
+from xojodoc.database import Database
 
 
 class ClassInfo(Static):

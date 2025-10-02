@@ -89,3 +89,5 @@ dmypy.json
 
 # HTML documentation source (large directory)
 /html/
+
+*.rar

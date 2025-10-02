@@ -7,9 +7,9 @@ Supports incremental indexing to only update changed files.
 import os
 from pathlib import Path
 from typing import Optional
-from .parser import HTMLParser
-from .database import Database
-from .config import get_config
+from xojodoc.parser import HTMLParser
+from xojodoc.database import Database
+from xojodoc.config import get_config
 
 # Legacy: kept for backwards compatibility
 # For new code, use config.py instead

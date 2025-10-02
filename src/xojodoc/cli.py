@@ -13,7 +13,7 @@ from rich.markdown import Markdown
 from rich.table import Table
 from rich.text import Text
 
-from .database import Database
+from xojodoc.database import Database
 
 
 console = Console()
@@ -35,7 +35,7 @@ class XojoDocCLI:
             console.print("[red]Error: Database not found![/red]")
             console.print(f"Expected location: {db_path}")
             console.print("\nPlease run the indexer first:")
-            console.print("  python -m src.xojodoc.indexer")
+            console.print("  xojodoc --reindex")
             sys.exit(1)
     
     def search_classes(self, query: str, limit: int = 10) -> List[Tuple]:
@@ -382,8 +382,8 @@ def main(query, show_class, show_method, limit, all, db_path, reindex):
     """
     # Handle reindex command
     if reindex:
-        from .indexer import Indexer
-        from .config import get_config
+        from xojodoc.indexer import Indexer
+        from xojodoc.config import get_config
         
         config = get_config()
         console.print("[cyan]Starting database rebuild...[/cyan]")
@@ -407,7 +407,7 @@ def main(query, show_class, show_method, limit, all, db_path, reindex):
     
     # No arguments at all -> launch TUI
     if not query and not show_class:
-        from .tui import main as tui_main
+        from xojodoc.tui import main as tui_main
         console.print("[cyan]Launching interactive browser...[/cyan]")
         tui_main(cli.db.db_path)
         return
