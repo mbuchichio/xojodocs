@@ -18,31 +18,36 @@ Tareas pendientes y roadmap del proyecto.
 
 ### 🚧 En Progreso
 
-#### Sprint 5: AI Export
-- [ ] Implementar `exporter.py`
-- [ ] Modo `--export-for-ai`
-- [ ] Seleccionar top 100 métodos más comunes
-- [ ] Generar markdown optimizado
-- [ ] Documentación de uso con Claude/GPT
-
-#### Sprint 6: Polish y Release
+#### Sprint 6: Polish y Release (ACTIVO)
 - [ ] Tests completos
-  - [ ] Unit tests para parser
+  - [x] Test structure created (tests/test_parser.py)
+  - [ ] Implement parser unit tests
   - [ ] Integration tests para CLI
+  - [ ] Database tests
   - [ ] TUI tests (manual)
-- [ ] Documentación de usuario
-  - [ ] Guía de instalación completa
-  - [ ] Ejemplos de uso
-  - [ ] Troubleshooting
+- [x] Documentación de usuario
+  - [x] README simplificado y conciso ✅
+  - [x] INSTALLATION.md directo y práctico ✅
+  - [x] Lenguaje sobrio y profesional ✅
+- [x] Version bump to 0.1.0-alpha
 - [ ] Packaging
-  - [ ] PyInstaller para exe standalone
-  - [ ] Verificar dependencias
+  - [ ] PyInstaller para exe standalone (opcional)
+  - [ ] Test en Windows limpio
 - [ ] Release MVP 0.1.0
+  - [ ] Review final de código
+  - [ ] Completar tests básicos
+  - [ ] Tag en Git
+  - [ ] GitHub Release
 
 ---
 
 ## 🚀 Phase 2: Mejoras Post-MVP
 
+### Opcional (Post-MVP)
+- [ ] **AI Export** - Exportar top 100 métodos en formato optimizado para LLMs
+  - Nota: Copilot puede ejecutar `xojodoc` directamente, así que esto puede no ser necesario
+
+### Futuras Mejoras
 - [ ] Advanced search con filtros
 - [ ] Historial de búsquedas
 - [ ] Favoritos/bookmarks

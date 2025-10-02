@@ -1,0 +1,14 @@
+# XojoDoc Configuration File
+# 
+# Edit the path below to match your Xojo installation.
+# This file should be in the same directory as xojodoc.
+
+[paths]
+# Path to Xojo HTML documentation
+# 
+# Windows default:
+html_root = C:\Program Files\Xojo\Xojo 2025r2.1\Xojo Resources\Language Reference\html
+
+# Database file (created in same directory as this config)
+database = xojo.db
+

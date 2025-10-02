@@ -49,6 +49,10 @@ integration_test.db
 *.db-journal
 *.sqlite-journal
 
+# Config files - User generated
+xojodoc.conf
+src/xojodoc.conf
+
 # Testing
 .pytest_cache/
 .coverage

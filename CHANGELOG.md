@@ -2,6 +2,44 @@
 
 Historial de cambios del proyecto.
 
+## [2025-10-02] - Sprint 6: Polish y Release 🚀
+
+### 🎉 Agregado
+- **Sistema de configuración simplificado** - `xojodoc.conf` auto-generado
+- **config.py** - Módulo para leer configuración sin editar código
+- **xojodoc --reindex** - Comando integrado para rebuild (reemplaza reindex.py)
+- **README simplificado** - Conciso, directo, lenguaje sobrio
+- **INSTALLATION.md** - Guía práctica sin verbosidad
+- **Test framework** - tests/test_parser.py estructura inicial
+- **Version bump** - 0.1.0-alpha preparando release
+
+### 📝 Documentación
+- xojodoc.conf: Se crea automáticamente si no existe
+- Archivo de configuración minimalista (solo html_root y database)
+- Eliminada complejidad innecesaria (temp paths, múltiples locations)
+- README y docs simplificados: foco en lo esencial
+
+### 🔧 Modificado  
+- pyproject.toml - Version 0.1.0-alpha
+- Development Status - Pre-Alpha → Alpha
+- reindex.py - Usa sistema de configuración simple, no borra DB
+- indexer.py - Eliminada lógica de temp_db_path
+- config.py - Busca solo en directorio de la app, auto-genera si falta
+
+### 🐛 Corregido
+- reindex.py ya no borra la DB existente (el indexer actualiza registros)
+- Encoding errors con emojis en Windows (removidos)
+- Imports innecesarios eliminados
+
+### 💡 Decisiones de Diseño
+- **Una sola ubicación de config** - Solo junto a la app (no CWD, no home)
+- **Sin temp path** - Diferencia de performance no justifica complejidad
+- **Auto-generación** - Primera ejecución crea config con defaults
+- **Rutas macOS/Linux omitidas** - Mejor no poner info incorrecta
+- **CLI unificado** - `xojodoc --reindex` en vez de script separado
+
+---
+
 ## [2025-10-02] - Descripciones Completas ✅
 
 ### 🎉 Agregado

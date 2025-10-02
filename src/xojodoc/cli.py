@@ -359,7 +359,8 @@ class XojoDocCLI:
 @click.option('--limit', '-l', default=10, help='Limit search results')
 @click.option('--all', '-a', is_flag=True, help='Show all properties and methods')
 @click.option('--db-path', default='xojo.db', help='Path to database')
-def main(query, show_class, show_method, limit, all, db_path):
+@click.option('--reindex', is_flag=True, help='Rebuild the documentation database')
+def main(query, show_class, show_method, limit, all, db_path, reindex):
     """XojoDoc - Command-line documentation browser for Xojo.
     
     USAGE:
@@ -368,6 +369,7 @@ def main(query, show_class, show_method, limit, all, db_path):
       xojodoc QUERY                Search for classes
       xojodoc -c CLASS             Show class details
       xojodoc -c CLASS -m METHOD   Show method details
+      xojodoc --reindex            Rebuild documentation database
     
     EXAMPLES:
     
@@ -376,7 +378,30 @@ def main(query, show_class, show_method, limit, all, db_path):
       xojodoc -c DesktopWindow     Show DesktopWindow class
       xojodoc -c Graphics -m DrawString   Show specific method
       xojodoc -c Color -a          Show Color with all details
+      xojodoc --reindex            Rebuild database
     """
+    # Handle reindex command
+    if reindex:
+        from .indexer import Indexer
+        from .config import get_config
+        
+        config = get_config()
+        console.print("[cyan]Starting database rebuild...[/cyan]")
+        console.print(f"HTML root: {config.get_html_root()}")
+        console.print(f"Database:  {config.get_database_path()}")
+        console.print()
+        
+        indexer = Indexer(
+            html_root=config.get_html_root(),
+            db_path=config.get_database_path()
+        )
+        
+        indexer.build_index(verbose=True, force=True)
+        
+        console.print("\n[green]✓ Reindex complete![/green]")
+        console.print(f"Database: {config.get_database_path()}")
+        return
+    
     # Initialize CLI
     cli = XojoDocCLI(db_path)
     

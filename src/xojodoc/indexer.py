@@ -9,9 +9,10 @@ from pathlib import Path
 from typing import Optional
 from .parser import HTMLParser
 from .database import Database
+from .config import get_config
 
-# Configuration: Default HTML documentation paths
-# Change this to point to your Xojo installation
+# Legacy: kept for backwards compatibility
+# For new code, use config.py instead
 DEFAULT_HTML_ROOT = r"C:\Program Files\Xojo\Xojo 2025r2.1\Xojo Resources\Language Reference\html"
 
 # Fallback to local copy if Xojo installation not found
@@ -22,20 +23,16 @@ if not Path(DEFAULT_HTML_ROOT).exists():
 class Indexer:
     """Indexes Xojo documentation into database."""
 
-    def __init__(self, html_root: str = "html", db_path: str = "xojo.db", temp_db_path: Optional[str] = None):
+    def __init__(self, html_root: str = "html", db_path: str = "xojo.db"):
         """Initialize indexer.
         
         Args:
             html_root: Root directory containing HTML documentation
-            db_path: Path to SQLite database (final location)
-            temp_db_path: Optional temporary path for building database (e.g., on SSD)
+            db_path: Path to SQLite database
         """
         self.parser = HTMLParser(html_root)
-        self.final_db_path = db_path
-        self.temp_db_path = temp_db_path
-        # Use temp path if provided, otherwise use final path
-        actual_db_path = temp_db_path if temp_db_path else db_path
-        self.db = Database(actual_db_path)
+        self.db_path = db_path
+        self.db = Database(db_path)
         
     def build_index(self, verbose: bool = True, force: bool = False) -> None:
         """Build complete documentation index.
@@ -128,36 +125,6 @@ class Indexer:
                 print(f"   Errors: {stats['errors']}")
                 print(f"   Total: {stats['total']}")
                 print(f"   Database: {self.db.db_path}")
-                
-            # Move database from temp to final location if needed
-            if self.temp_db_path and self.temp_db_path != self.final_db_path:
-                self._move_database_to_final_location(verbose)
-                
-    def _move_database_to_final_location(self, verbose: bool = True) -> None:
-        """Move database from temporary location to final location."""
-        import shutil
-        
-        if verbose:
-            print(f"\n=== Moving database ===")
-            print(f"   From: {self.temp_db_path}")
-            print(f"   To: {self.final_db_path}")
-        
-        try:
-            # Close the database connection
-            self.db.close()
-            
-            # Move the file
-            shutil.move(self.temp_db_path, self.final_db_path)
-            
-            # Reopen database at final location
-            self.db = Database(self.final_db_path)
-            
-            if verbose:
-                print(f"   ✓ Database moved successfully!")
-        except Exception as e:
-            if verbose:
-                print(f"   ✗ Error moving database: {e}")
-                print(f"   Database remains at: {self.temp_db_path}")
                 
     def update_class(self, module: str, class_name: str, verbose: bool = True) -> bool:
         """Update a single class in the index.
