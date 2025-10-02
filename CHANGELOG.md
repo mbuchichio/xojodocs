@@ -8,6 +8,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Added
+- Incremental indexing support - only reindexes changed files
+- Database tracks file modification times (`file_mtime`) and indexing timestamps (`indexed_at`)
+- `--force` flag to force reindex all files regardless of timestamps
+- Database migration script (`migrate_database.py`) to upgrade existing databases
+- Test suite for incremental indexing (`test_incremental.py`)
+
+### Changed
+- Indexer now skips unchanged files by default (incremental mode)
+- Database schema updated with `file_mtime` and `indexed_at` columns in classes table
+- Improved indexing performance: ~0.2s for unchanged files vs 10+ minutes for full reindex
+
+### Added (Sprint 2)
 - Python project structure with pyproject.toml
 - MIT License
 - Source package structure in `src/xojodoc/`

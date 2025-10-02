@@ -1,8 +1,10 @@
 """Indexer module for building the documentation database.
 
 Coordinates parsing and storage of Xojo documentation.
+Supports incremental indexing to only update changed files.
 """
 
+import os
 from pathlib import Path
 from typing import Optional
 from .parser import HTMLParser
@@ -22,11 +24,12 @@ class Indexer:
         self.parser = HTMLParser(html_root)
         self.db = Database(db_path)
         
-    def build_index(self, verbose: bool = True) -> None:
+    def build_index(self, verbose: bool = True, force: bool = False) -> None:
         """Build complete documentation index.
         
         Args:
             verbose: Print progress information
+            force: Force reindex all files, ignoring modification times
         """
         with self.db:
             # Create schema
@@ -40,24 +43,49 @@ class Indexer:
             classes = self.parser.discover_classes()
             
             if verbose:
-                print(f"Found {len(classes)} classes to index")
+                print(f"Found {len(classes)} classes")
+                if not force:
+                    print("=> Incremental mode: skipping unchanged files")
+                else:
+                    print("=> Force mode: reindexing all files")
                 
+            stats = {
+                'total': len(classes),
+                'indexed': 0,
+                'skipped': 0,
+                'errors': 0
+            }
+            
             # Parse and store each class
             for idx, (module, file_path) in enumerate(classes, 1):
-                if verbose:
-                    class_name = Path(file_path).stem
-                    print(f"[{idx}/{len(classes)}] Indexing {module}.{class_name}...")
-                    
+                class_name = Path(file_path).stem
+                
                 try:
+                    # Check if file needs reindexing
+                    file_mtime = os.path.getmtime(file_path)
+                    
+                    if not force and not self.db.needs_reindex(file_path, file_mtime):
+                        stats['skipped'] += 1
+                        if verbose and stats['skipped'] % 50 == 0:
+                            print(f">> Skipped {stats['skipped']} unchanged files...")
+                        continue
+                    
+                    if verbose:
+                        print(f"[{idx}/{len(classes)}] Indexing {module}.{class_name}...")
+                    
                     # Parse class
                     xojo_class = self.parser.parse_class_file(file_path)
                     if not xojo_class:
                         if verbose:
                             print(f"  ⚠ Skipped (no data found)")
+                        stats['skipped'] += 1
                         continue
-                        
-                    # Insert class
-                    class_id = self.db.insert_class(xojo_class)
+                    
+                    # Delete old data for clean update
+                    self.db.delete_class_by_path(file_path)
+                    
+                    # Insert class with mtime
+                    class_id = self.db.insert_class(xojo_class, file_mtime)
                     
                     # Parse and insert properties
                     properties = self.parser.parse_properties(file_path)
@@ -69,16 +97,24 @@ class Indexer:
                     for method in methods:
                         self.db.insert_method(class_id, method)
                         
+                    stats['indexed'] += 1
+                    
                     if verbose:
                         print(f"  ✓ Indexed: {len(properties)} properties, {len(methods)} methods")
                         
                 except Exception as e:
+                    stats['errors'] += 1
                     if verbose:
                         print(f"  ✗ Error: {e}")
                     continue
                     
             if verbose:
-                print(f"\n✓ Indexing complete! Database: {self.db.db_path}")
+                print(f"\n=== Indexing complete! ===")
+                print(f"   Indexed: {stats['indexed']}")
+                print(f"   Skipped: {stats['skipped']}")
+                print(f"   Errors: {stats['errors']}")
+                print(f"   Total: {stats['total']}")
+                print(f"   Database: {self.db.db_path}")
                 
     def update_class(self, module: str, class_name: str, verbose: bool = True) -> bool:
         """Update a single class in the index.
@@ -155,11 +191,16 @@ def main():
         action="store_true",
         help="Suppress progress output"
     )
+    parser.add_argument(
+        "--force",
+        action="store_true",
+        help="Force reindex all files, ignoring modification times"
+    )
     
     args = parser.parse_args()
     
     indexer = Indexer(html_root=args.html_root, db_path=args.db_path)
-    indexer.build_index(verbose=not args.quiet)
+    indexer.build_index(verbose=not args.quiet, force=args.force)
 
 
 if __name__ == "__main__":

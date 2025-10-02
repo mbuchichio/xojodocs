@@ -83,6 +83,8 @@ class Database:
                 compatibility TEXT,
                 notes TEXT,
                 file_path TEXT,
+                file_mtime REAL,
+                indexed_at REAL,
                 UNIQUE(module, name)
             )
         """)
@@ -149,11 +151,12 @@ class Database:
         
         self.conn.commit()
         
-    def insert_class(self, xojo_class: XojoClass) -> int:
+    def insert_class(self, xojo_class: XojoClass, file_mtime: Optional[float] = None) -> int:
         """Insert a class into the database.
         
         Args:
             xojo_class: XojoClass object to insert
+            file_mtime: File modification time (Unix timestamp)
             
         Returns:
             ID of inserted class
@@ -161,11 +164,13 @@ class Database:
         if not self.conn:
             raise RuntimeError("Database not connected")
             
+        import time
+        
         cursor = self.conn.cursor()
         cursor.execute("""
             INSERT OR REPLACE INTO classes 
-            (name, module, description, sample_code, compatibility, notes, file_path)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
+            (name, module, description, sample_code, compatibility, notes, file_path, file_mtime, indexed_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (
             xojo_class.name,
             xojo_class.module,
@@ -173,7 +178,9 @@ class Database:
             xojo_class.sample_code,
             xojo_class.compatibility,
             xojo_class.notes,
-            xojo_class.file_path
+            xojo_class.file_path,
+            file_mtime,
+            time.time()
         ))
         
         class_id = cursor.lastrowid
@@ -346,6 +353,63 @@ class Database:
         self.connect()
         return self
         
+    def needs_reindex(self, file_path: str, file_mtime: float) -> bool:
+        """Check if a file needs to be reindexed.
+        
+        Args:
+            file_path: Path to the file
+            file_mtime: Current file modification time
+            
+        Returns:
+            True if file needs reindexing
+        """
+        if not self.conn:
+            raise RuntimeError("Database not connected")
+            
+        cursor = self.conn.cursor()
+        cursor.execute("""
+            SELECT file_mtime FROM classes WHERE file_path = ?
+        """, (file_path,))
+        
+        row = cursor.fetchone()
+        
+        # Need to index if not found or mtime changed
+        if not row:
+            return True
+            
+        stored_mtime = row[0]
+        if stored_mtime is None:
+            return True
+            
+        return file_mtime > stored_mtime
+        
+    def delete_class_by_path(self, file_path: str) -> None:
+        """Delete a class and its related data by file path.
+        
+        Args:
+            file_path: Path to the file
+        """
+        if not self.conn:
+            raise RuntimeError("Database not connected")
+            
+        cursor = self.conn.cursor()
+        
+        # Get class ID
+        cursor.execute("SELECT id FROM classes WHERE file_path = ?", (file_path,))
+        row = cursor.fetchone()
+        
+        if row:
+            class_id = row[0]
+            
+            # Delete methods and properties (cascade should handle this, but being explicit)
+            cursor.execute("DELETE FROM methods WHERE class_id = ?", (class_id,))
+            cursor.execute("DELETE FROM properties WHERE class_id = ?", (class_id,))
+            
+            # Delete class
+            cursor.execute("DELETE FROM classes WHERE id = ?", (class_id,))
+            
+            self.conn.commit()
+    
     def __exit__(self, exc_type, exc_val, exc_tb):
         """Context manager exit."""
         self.close()

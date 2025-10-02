@@ -46,6 +46,8 @@ venv.bak/
 xojo.db
 test_xojo.db
 integration_test.db
+*.db-journal
+*.sqlite-journal
 
 # Testing
 .pytest_cache/
