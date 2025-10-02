@@ -8,7 +8,7 @@ Timeline and pending tasks for XojoDoc development.
 
 ## 🎯 MVP - Version 0.1.0 (Goal: 2-3 weeks)
 
-### Sprint 1: Analysis and Architecture (Days 1-3)
+### Sprint 1: Analysis and Architecture (Days 1-3) ✅ COMPLETE
 - [x] Create initial project structure
 - [x] Document vision and architecture in README
 - [x] Setup changelog and backlog
@@ -16,15 +16,15 @@ Timeline and pending tasks for XojoDoc development.
   - [x] Identify patterns in HTML files
   - [x] Map structure of classes, methods, properties
   - [x] Document code example format
-- [ ] Design SQLite database schema
-  - [ ] Classes table
-  - [ ] Methods/properties table
-  - [ ] FTS5 indexes for search
-- [ ] Define Python project structure
-  - [ ] Configure pyproject.toml / requirements.txt
-  - [ ] Define main modules
+- [x] Design SQLite database schema
+  - [x] Classes table
+  - [x] Methods/properties table
+  - [x] FTS5 indexes for search
+- [x] Define Python project structure
+  - [x] Configure pyproject.toml / requirements.txt
+  - [x] Define main modules
 
-### Sprint 2: Parser and Indexer (Days 4-7)
+### Sprint 2: Parser and Indexer (Days 4-7) ✅ COMPLETE
 - [x] Implement `indexer.py`
   - [x] HTML parser with BeautifulSoup
   - [x] Extract classes and methods
@@ -34,22 +34,29 @@ Timeline and pending tasks for XojoDoc development.
   - [x] Create schema initial
   - [x] Configure FTS5 for full-text search
   - [x] Migration scripts
-- [ ] Test complete indexing
-  - [ ] Verify all classes are indexed
-  - [ ] Validate extraction quality
-  - [ ] Measure indexing times
+- [x] Test complete indexing
+  - [x] Verify all classes are indexed (717/717)
+  - [x] Validate extraction quality
+  - [x] Measure indexing times
+- [x] **Incremental indexing** (bonus)
+  - [x] Track file modification times
+  - [x] Only reindex changed files
+  - [x] 100x performance improvement
 
-### Sprint 3: Basic CLI (Days 8-10)
-- [ ] Implement `xojodoc.py`
-  - [ ] Entry point with CLI arguments
-  - [ ] Basic search by class/method name
-  - [ ] Formatted terminal output
-  - [ ] Basic error handling
-- [ ] Simple query mode
-  - [ ] `xojodoc ClassName` → show class info
-  - [ ] `xojodoc ClassName.Method` → show method info
-  - [ ] Fuzzy search if no exact match
-- [ ] Basic CLI tests
+### Sprint 3: Basic CLI (Days 8-10) ✅ COMPLETE
+- [x] Implement `cli.py`
+  - [x] Entry point with CLI arguments
+  - [x] Basic search by class/method name
+  - [x] Formatted terminal output
+  - [x] Basic error handling
+- [x] Simple query mode
+  - [x] `xojodoc search ClassName` → show search results
+  - [x] `xojodoc cls ClassName` → show class info
+  - [x] `xojodoc method ClassName MethodName` → show method info
+- [x] Basic CLI tests
+  - [x] All 6 tests passing
+  - [x] Help, search, class, method commands
+  - [x] Error handling tests
 
 ### Sprint 4: Interactive TUI (Days 11-14)
 - [ ] Implement `tui.py`

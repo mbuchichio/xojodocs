@@ -75,12 +75,31 @@ python -m src.xojodoc.indexer
 
 # Force rebuild entire index (use after Xojo updates)
 python -m src.xojodoc.indexer --force
-
-# Search documentation (coming in Sprint 3)
-python -m src.xojodoc.cli search "Graphics"
 ```
 
-**Performance**: Incremental indexing skips unchanged files, making subsequent runs ~100x faster (~0.2s vs 10+ minutes for full reindex).
+### Using the CLI
+
+```bash
+# Search for classes
+python -m xojodoc.cli search Graphics
+
+# Show class details
+python -m xojodoc.cli cls Graphics
+
+# Show all properties and methods (not just first 5)
+python -m xojodoc.cli cls Graphics --all
+
+# Show method details
+python -m xojodoc.cli method Graphics DrawText
+
+# Get help
+python -m xojodoc.cli --help
+```
+
+**Performance**: 
+- Incremental indexing: ~0.2s (skips unchanged files)
+- Full reindex: ~10-20 minutes (all 717 classes)
+- Search: instant with FTS5 full-text index
 
 ### Future Expansion
 - User code analysis for personalized context

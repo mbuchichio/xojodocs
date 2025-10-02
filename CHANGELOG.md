@@ -7,7 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
-### Added
+### Added (Sprint 3) ✅
+- Basic CLI with Click framework (`cli.py`)
+- Search command: `xojodoc search <query>`
+- Class command: `xojodoc cls <ClassName>` with `--all` flag
+- Method command: `xojodoc method <ClassName> <MethodName>`
+- Rich terminal output with tables and panels
+- Error handling for not found classes/methods
+- Test suite for Sprint 3 with 6 passing tests
+
+### Added (Incremental Indexing)
 - Incremental indexing support - only reindexes changed files
 - Database tracks file modification times (`file_mtime`) and indexing timestamps (`indexed_at`)
 - `--force` flag to force reindex all files regardless of timestamps

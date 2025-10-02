@@ -55,6 +55,7 @@ Issues = "https://github.com/mbuchichio/xojodocs/issues"
 
 [project.scripts]
 xojodoc = "xojodoc.cli:main"
+xojodoc-index = "xojodoc.indexer:main"
 
 [tool.setuptools]
 package-dir = {"" = "src"}
